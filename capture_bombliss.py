@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 ## separate to config files?
-NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L"}
+NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L", 7:"LJ"}
 
 WINDOW_POS = (1308, 273, 270, 528)
 NEXT_POS = (1391, 233, 100, 30)
@@ -14,11 +14,12 @@ NEXT_IMGS = ["next_imgs/"+x[1]+"_binary.png" for x in NEXT_MINOS.items()]
 CHIP_X = 27
 CHIP_Y = 24
 
-class CaptureBombriss:
+class CaptureBombliss:
     def __init__(self):
         self.next_mino = 0
         self.current_mino = 0
         self.next_flag = 0
+        self.cnt = 0
 
         self.board = [[None for c in range(WINDOW_POS[2]/CHIP_X)] for l in range(WINDOW_POS[3]/CHIP_Y)]
 
@@ -33,6 +34,14 @@ class CaptureBombriss:
     def board(self, value):
         self.board = value
 
+
+    def whitning_board(self, board):
+        b = board
+        for i in xrange(len(board)):
+            if i < 2 :
+                b[i] = [0 for x in xrange(len(board[0]))]
+        return b
+
     def get_current_mino(self):
         return NEXT_MINOS[self.current_mino]
 
@@ -43,6 +52,7 @@ class CaptureBombriss:
 
 ## refactoring flag process
     def parse_chips(self, clp = None):
+        num_stop = 3
         board = self.board
         if clp == None : clp = self.capture_window(WINDOW_POS)
         for y in range(CHIP_Y, len(clp)+1, CHIP_Y):
@@ -54,8 +64,11 @@ class CaptureBombriss:
                 else:
                     board[y/CHIP_Y-1][x/CHIP_X-1] = 1
         self.board = board
-        if self.next_flag == 0 and (sum(board[0]) > 0 or sum(board[1])):
+        self.cnt += 1
+
+        if self.next_flag == 0 and (sum(board[0]) > 0 or sum(board[1])) and self.cnt > num_stop:
             self.next_flag = 1
+            self.cnt = 0
             return
 
         if self.next_flag == 1 :
@@ -67,7 +80,7 @@ class CaptureBombriss:
         if clp == None : img = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(img, (11,11), 0)
         img = self.binarize(img)
-        #cv2.imwrite("next.png", img)
+        #cv2.imwrite("lj_binary.png", img)
         cor = []
         for i in NEXT_IMGS:
             img_t = cv2.imread(i)
@@ -76,6 +89,7 @@ class CaptureBombriss:
         if not self.current_mino == self.next_mino:
             self.next_flag = 1
             self.current_mino = self.next_mino
+            
         self.next_mino = cor.index(max(cor))
 
 ## deprecated?
@@ -147,9 +161,9 @@ class CaptureBombriss:
 
 if __name__ == '__main__':
 
-    b = CaptureBombriss()
+    b = CaptureBombliss()
     b.parse_next()
-    b.parse_chips()
+    #b.parse_chips()
 
 """
     while True:

@@ -86,7 +86,28 @@ TETRIMINOS = {
      [1, 0],
      [1, 1]]
      ]
+     ,
+ "LJ":[
+     [[1, 1, 1],
+      [1, 0, 0],
+      [1, 0, 0]],
+
+     [[1, 1, 1],
+      [0, 0, 1],
+      [0, 0, 1]],
+
+     [[0, 0, 1],
+      [0, 0, 1],
+      [1, 1, 1]],
+
+     [[1, 0, 0],
+      [1, 0, 0],
+      [1, 1, 1]]
+      ]
 }
+
+
+
 
 ILLEGAL_BLOCK = [
     [[1, 1],
@@ -113,7 +134,7 @@ ILLEGAL_BLOCK = [
      [1, 1]]
 ]
 
-class ThinkBombriss:
+class ThinkBombliss:
     ##
     def __init__(self, boardsize):
         self.boardsize_x = boardsize[0]
@@ -138,6 +159,7 @@ class ThinkBombriss:
                     if board[ypos+y][xpos+x] == 1 and mino[y][x] == 1 :
                         #print "Collision.",x,y,xpos,ypos
                         return ypos-1
+        return ypos
     ## deprecated?
     def cut_array(self, arr, x, y, dx, dy):
         out = []
@@ -145,16 +167,43 @@ class ThinkBombriss:
             out.append(i[x:x+dx])
         return out
 
-    # refactoring
-    def eval_space2(self, board):
+    def make_frame(self, board):
         board_w = []
-        cnt = 0
-        penalty_adjacent = 0
-
         board_w.append([1 for x in xrange(len(board[0])+2)])
         for i in board:
             board_w.append([1] + i + [1])
         board_w.append([1 for x in xrange(len(board[0])+2)])
+
+        return board_w
+
+    def count_ones(self, mino):
+        cnt = 0
+        for y in xrange(len(mino)):
+            for x in xrange(len(mino[0])):
+                if mino[y][x] == 1 : cnt += 1
+
+        return cnt
+
+    def eval_space3(self, board, mino, px, py):
+        b = self.compose_mino(board, mino, px, py)
+        board_w = self.make_frame(b)
+        cnt = 0
+        size = (len(mino)) * (len(mino[0])+2)
+        #size = (len(mino)+2) * (len(mino[0])+2)
+        #for y in xrange(py-1, py+len(mino)+1):
+        for y in xrange(py+1, py+len(mino)+1):
+            for x in xrange(px-1, px+len(mino[0])+1):
+                if board_w[y][x] == 0 : cnt += 1
+
+        #return (size - cnt) / size
+        return (size - cnt)
+
+    # refactoring
+    def eval_space2(self, board, mino, px, py):
+        cnt = 0
+        penalty_adjacent = 0
+        b = self.compose_mino(board, mino, px, py)
+        board_w = make_frame(b)
         for y in xrange(1, len(board)+1):
             for x in xrange(1, len(board[0])+1):
                 above = board_w[y+1][x]
@@ -211,7 +260,8 @@ class ThinkBombriss:
     def compose_mino(self, board, mino, px, py):
         b = [[0 for i in xrange(10)] for j in xrange(22)]
         c = [[0 for i in xrange(10)] for j in xrange(22)]
-        #print py+len(mino)
+        #print py,len(mino)
+
         for y in range(py, py+len(mino)) :
             for x in range(px, px+len(mino[0])) :
                 #print x,y,px,py
@@ -223,8 +273,7 @@ class ThinkBombriss:
 
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
-        c_board = self.compose_mino(board, mino, px, ev_ypos)
-        ev_space = self.eval_space2(c_board)
+        ev_space = self.eval_space3(board, mino, px, ev_ypos)
         return (ev_ypos+len(mino)-1, ev_space)
 
     # refactor
@@ -232,29 +281,43 @@ class ThinkBombriss:
         canditate = []
         canditate_tmp = []
         mino = TETRIMINOS[current_mino]
-        max_ev_val = 0
+        max_ev_height = 0
+        min_ev_space = 1000
+        weight_penalty = 5
 
         for sel in range(0, len(mino)):
             for xpos in range(0,self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0])/22 + float(ev_val[1])/100
+                norm_ev_val = float(ev_val[0])+float(ev_val[1])/100
+                #norm_ev_val = (float(ev_val[0]), float(ev_val[1]))
+                #norm_ev_val = float(ev_val[0])
                 canditate_tmp.append(norm_ev_val)
             canditate.append(canditate_tmp)
             canditate_tmp = []
 
+#        min_val = 10000
+#        for i in range(0, len(canditate)) :
+#            for j in range(0, len(canditate[i])):
+#                if min_val > canditate[i][j][0] :
+#                    min_val = canditate[i][j][0]
+#
+#        for i in range(0, len(canditate)) :
+#            for j in range(0, len(canditate[i])):
+#                canditate[i][j] = (canditate[i][j][0] - min_val) + canditate[i][j][1]
+
         print canditate
         for i in range(0, len(canditate)) :
             for j in range(0, len(canditate[i])):
-                if max_ev_val < canditate[i][j]:
-                    max_ev_val = canditate[i][j]
+                if max_ev_height < canditate[i][j]:
+                    max_ev_height = canditate[i][j]
                     max_xpos = j
                     max_sel = i
-
-        return (max_xpos, max_sel)
+        return (max_xpos, max_sel, self.fall(board, mino[max_sel], max_xpos))
+#       return (max_xpos, max_sel)
 
 if __name__ == '__main__':
 
-    t = ThinkBombriss(boardsize=(10,22))
+    t = ThinkBombliss(boardsize=(10,22))
 
     board = [
          [0,0,0,0,0,0,0,0,0,0],
@@ -273,12 +336,12 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,1,0,0,1],
-         [0,0,1,0,0,1,1,0,1,1],
-         [0,0,1,0,0,1,1,1,1,0],
-         [1,0,1,1,1,1,0,0,0,0],
-         [1,0,1,0,0,0,0,0,0,0],
-         [1,1,1,1,1,1,1,1,1,0]]
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0],
+         [1,1,0,0,0,1,1,1,1,1]]
          #print a
     #a = t.cut_array([[0,1,1,1], [1,1,1,0], [0,1,1,0], [0,1,1,0]], 0, 1, 3, 2)
     #
@@ -286,7 +349,7 @@ if __name__ == '__main__':
     #print t.fall(b,TETRIMINOS["J"][0],0)
     #print t.cut_array([[1,2,3],[4,5,6],[7,8,9]],1,1,2,2)
     #print t.fall(board, TETRIMINOS["Z"][0],0)
-    print t.think(board,"S")
+    print t.think(board,"L")
     #print t.eval_space2(t.compose_mino(board, TETRIMINOS["I"][1], 9, 18))
     #print t.evaluate(board, TETRIMINOS["I"][1],9)
     #print t.fall(board, TETRIMINOS["I"][1], 9)
