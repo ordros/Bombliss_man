@@ -140,15 +140,6 @@ class ThinkBombliss:
         self.boardsize_x = boardsize[0]
         self.boardsize_y = boardsize[1]
 
-    ## slower than fall
-    def fall2(self, board, mino, xpos):
-        l_and = lambda x,y: x and y
-        for ypos in xrange(len(board)-len(mino)+1):
-            b = self.cut_array(board, xpos, ypos, len(mino[0]), len(mino))
-            if sum(map(l_and, list(chain.from_iterable(b)), list(chain.from_iterable(mino)))) > 0:
-                return ypos-1
-        return ypos
-
     def fall(self, board, mino, xpos):
         for ypos in range(0, len(board)):
             for y in range(0, len(mino)):
@@ -160,12 +151,6 @@ class ThinkBombliss:
                         #print "Collision.",x,y,xpos,ypos
                         return ypos-1
         return ypos
-    ## deprecated?
-    def cut_array(self, arr, x, y, dx, dy):
-        out = []
-        for i in arr[y:y+dy] :
-            out.append(i[x:x+dx])
-        return out
 
     def make_frame(self, board):
         board_w = []
@@ -175,14 +160,6 @@ class ThinkBombliss:
         board_w.append([1 for x in xrange(len(board[0])+2)])
 
         return board_w
-
-    def count_ones(self, mino):
-        cnt = 0
-        for y in xrange(len(mino)):
-            for x in xrange(len(mino[0])):
-                if mino[y][x] == 1 : cnt += 1
-
-        return cnt
 
     def eval_space3(self, board, mino, px, py):
         b = self.compose_mino(board, mino, px, py)
@@ -243,7 +220,6 @@ class ThinkBombliss:
         for block in ILLEGAL_BLOCK:
             for y in range(0, len(board)-len(block)+1):
                 for x in range(0, len(board[0])-len(block[0])+1):
-                    tmp = self.cut_array(board, x, y, len(block[0]), len(block))
                     for by in range(0, len(block)):
                         for bx in range(0, len(block[0])):
                             if board[y+by][x+bx] == block[by][bx] :
@@ -342,35 +318,4 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [1,1,0,0,0,1,1,1,1,1]]
-         #print a
-    #a = t.cut_array([[0,1,1,1], [1,1,1,0], [0,1,1,0], [0,1,1,0]], 0, 1, 3, 2)
-    #
-    #t.evaluate(b, TETRIMINOS["S"][1], 8, 18)
-    #print t.fall(b,TETRIMINOS["J"][0],0)
-    #print t.cut_array([[1,2,3],[4,5,6],[7,8,9]],1,1,2,2)
-    #print t.fall(board, TETRIMINOS["Z"][0],0)
     print t.think(board,"L")
-    #print t.eval_space2(t.compose_mino(board, TETRIMINOS["I"][1], 9, 18))
-    #print t.evaluate(board, TETRIMINOS["I"][1],9)
-    #print t.fall(board, TETRIMINOS["I"][1], 9)
-
-"""
-    for tt in TETRIMINOS:
-        for sel in xrange(len(TETRIMINOS[tt])):
-            for xpos in xrange(10-len(TETRIMINOS[tt][sel][0])+1):
-                b = t.fall2(board,TETRIMINOS[tt][sel],xpos)
-                a = t.fall(board,TETRIMINOS[tt][sel],xpos)
-                try:
-                    assert a == b
-                except:
-                    print "err.",tt,sel,xpos, a,b
-
-
-    s = time.time()
-    for i in xrange(10000):
-        t.fall2(board,TETRIMINOS["I"][1],1)
-    #t.fall(board,TETRIMINOS[tt][sel],xpos)
-
-    st = time.time()
-    print st-s
-"""
