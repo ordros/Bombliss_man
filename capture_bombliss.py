@@ -89,7 +89,7 @@ class CaptureBombliss:
         if not self.current_mino == self.next_mino:
             self.next_flag = 1
             self.current_mino = self.next_mino
-            
+
         self.next_mino = cor.index(max(cor))
 
 ## deprecated?
@@ -100,18 +100,6 @@ class CaptureBombliss:
         return chip_avg
 
     def decide_chip(self, chip):
-        chip1 = chip[5][5]
-        chip2 = chip[9][9]
-        chip3 = chip[5][9]
-        chip4 = chip[9][5]
-        chip_b = []
-        for i in range(0, 3):
-            chip_b.append(max(chip1[i],chip2[i],chip3[i],chip4[i]))
-        if chip_b[0] < 100 and chip_b[1] < 100 and chip_b[2] < 100 : return True
-        else: return False
-
-## more simplfy
-    def decide_chip2(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]
         if p[0] < 100 and p[1] < 100 and p[2] < 100 : return True
         else: return False
