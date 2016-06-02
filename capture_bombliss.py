@@ -7,7 +7,7 @@ import os
 ## separate to config files?
 NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L", 7:"LJ"}
 
-WINDOW_POS = (1308, 273, 270, 528)
+WINDOW_POS = (1308, 273, 270, 528) # xpos, ypos, window_xsize, window_ysize
 NEXT_POS = (1391, 233, 100, 30)
 NEXT_IMGS = ["next_imgs/"+x[1]+"_binary.png" for x in NEXT_MINOS.items()]
 
@@ -33,7 +33,6 @@ class CaptureBombliss:
     @board.setter
     def board(self, value):
         self.board = value
-
 
     def whitning_board(self, board):
         b = board
@@ -135,7 +134,6 @@ class CaptureBombliss:
         cnt = 0
         p = 0
         out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
-
         for y in xrange(len(img1)):
             for x in xrange(len(img1[0])):
                 if list(img1[y][x]) == list(img2[y][x]) :

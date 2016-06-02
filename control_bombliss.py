@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-
 import RPi.GPIO as GPIO
 import time
 import socket
 import threading
-
 
 RIGHT = 22
 LEFT = 4
@@ -37,6 +35,7 @@ def press(sel):
 def move(xpos, ypos, sel):
 	for i in xrange(sel):
 		press(3)
+
 	time.sleep(wait_change)
 
 	if xpos < 0 :
@@ -45,6 +44,7 @@ def move(xpos, ypos, sel):
 	else :
 		for i in xrange(xpos):
 			press(0)
+
 	time.sleep(wait_change)
 	down(ypos)
 

@@ -141,6 +141,8 @@ class ThinkBombliss:
         self.boardsize_y = boardsize[1]
 
     def fall(self, board, mino, xpos):
+        if xpos + len(mino[0]) > len(board[0]):
+            raise Exceptions
         for ypos in range(0, len(board)):
             for y in range(0, len(mino)):
                 for x in range(0, len(mino[0])):
