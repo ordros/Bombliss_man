@@ -104,6 +104,93 @@ TETRIMINOS = {
       [1, 0, 0],
       [1, 1, 1]]
       ]
+      ,
+  "O1":[
+     [[1, 1, 1],
+      [0, 1, 1]],
+
+     [[0, 1],
+      [1, 1],
+      [1, 1]],
+
+     [[1, 1, 0],
+      [1, 1, 1]]
+      ,
+     [[1, 1],
+      [1, 1],
+      [1, 0]],
+      ],
+  "O2":[
+     [[1, 1, 1],
+      [1, 1, 0]],
+
+     [[1, 1],
+      [1, 1],
+      [0, 1]],
+
+     [[0, 1, 1],
+      [1, 1, 1]],
+
+     [[1, 0],
+      [1, 1],
+      [1, 1]],
+      ]
+      ,
+  "I1":[
+     [[1, 1, 1]],
+
+     [[1],
+      [1],
+      [1]]
+      ]
+      ,
+  "I2":[
+     [[1, 1, 1, 1, 1]],
+
+     [[1],
+      [1],
+      [1],
+      [1],
+      [1]]
+      ]
+      ,
+
+  "J1":[
+     [[1, 1, 1, 1],
+      [0, 0, 0, 1]],
+
+     [[0, 1],
+      [0, 1],
+      [0, 1],
+      [1, 1]],
+
+     [[1, 0, 0, 0],
+      [1, 1, 1, 1]],
+
+     [[1, 1],
+      [1, 0],
+      [1, 0],
+      [1, 0]],
+      ]
+      ,
+
+  "L1":[
+     [[1, 1, 1, 1],
+      [1, 0, 0, 0]],
+
+     [[1, 1],
+      [0, 1],
+      [0, 1],
+      [0, 1]],
+
+     [[0, 0, 0, 1],
+      [1, 1, 1, 1]],
+
+     [[1, 0],
+      [1, 0],
+      [1, 0],
+      [1, 1]],
+      ]
 }
 
 
@@ -167,11 +254,12 @@ class ThinkBombliss:
         b = self.compose_mino(board, mino, px, py)
         board_w = self.make_frame(b)
         cnt = 0
-        size = (len(mino)) * (len(mino[0])+2)
+        #size = (len(mino)) * (len(mino[0])+2)
         #size = (len(mino)+2) * (len(mino[0])+2)
         #for y in xrange(py-1, py+len(mino)+1):
+        size = (len(mino)) * (len(mino[0]))
         for y in xrange(py+1, py+len(mino)+1):
-            for x in xrange(px-1, px+len(mino[0])+1):
+            for x in xrange(px, px+len(mino[0])):
                 if board_w[y][x] == 0 : cnt += 1
 
         #return (size - cnt) / size
@@ -266,7 +354,7 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0,self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0])+float(ev_val[1])/100
+                norm_ev_val = float(ev_val[0])+float(ev_val[1])/1000
                 #norm_ev_val = (float(ev_val[0]), float(ev_val[1]))
                 #norm_ev_val = float(ev_val[0])
                 canditate_tmp.append(norm_ev_val)

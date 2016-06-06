@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 ## separate to config files?
-NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L", 7:"LJ"}
+NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L", 7:"LJ", 8:"O1", 9:"L1", 10:"J1", 11:"I1", 12:"I2", 13:"O2"}
 
 WINDOW_POS = (1308, 273, 270, 528) # xpos, ypos, window_xsize, window_ysize
 NEXT_POS = (1391, 233, 100, 30)
@@ -58,7 +58,7 @@ class CaptureBombliss:
             for x in range(CHIP_X, len(clp[0])+1, CHIP_X):
                 #cv2.imwrite("chips/"+str(y)+"_"+str(x)+".png", clp[y-CHIP_Y:y-1, x-CHIP_X:x-1])
                 chip = clp[y-CHIP_Y:y-1, x-CHIP_X:x-1]
-                if self.decide_chip2(chip):
+                if self.decide_chip(chip):
                     board[y/CHIP_Y-1][x/CHIP_X-1] = 0
                 else:
                     board[y/CHIP_Y-1][x/CHIP_X-1] = 1
@@ -143,7 +143,6 @@ class CaptureBombliss:
             #if cnt >  : p += 1
             #cnt = 0
         return cnt
-
 
 if __name__ == '__main__':
 
