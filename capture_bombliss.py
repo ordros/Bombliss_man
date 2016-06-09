@@ -25,6 +25,7 @@ class CaptureBombliss:
 
         self.boardsize_x = (WINDOW_POS[2]/CHIP_X)
         self.boardsize_y = (WINDOW_POS[3]/CHIP_Y)
+        self.imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
 
     @property
     def board(self):
@@ -81,22 +82,14 @@ class CaptureBombliss:
         img = self.binarize(img)
         #cv2.imwrite("lj_binary.png", img)
         cor = []
-        for i in NEXT_IMGS:
-            img_t = cv2.imread(i)
-            cor.append(self.diff(img, img_t))
+        for i in self.imgs_next:
+            cor.append(self.diff(img, i))
 
         if not self.current_mino == self.next_mino:
             self.next_flag = 1
             self.current_mino = self.next_mino
 
         self.next_mino = cor.index(max(cor))
-
-## deprecated?
-    def calc_chips_avg(self, chip1, chip2, chip3, chip4):
-        chip_avg = []
-        for i in range(0,3):
-            chip_avg.append((int(chip1[i]) + int(chip2[i]) + int(chip3[i]) + int(chip4[i]))/4)
-        return chip_avg
 
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]

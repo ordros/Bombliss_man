@@ -258,9 +258,9 @@ class ThinkBombliss:
         #size = (len(mino)+2) * (len(mino[0])+2)
         #for y in xrange(py-1, py+len(mino)+1):
         size = (len(mino)) * (len(mino[0]))
-        for y in xrange(py+1, py+len(mino)+1):
+        for y in xrange(py, py+len(mino)):
             for x in xrange(px, px+len(mino[0])):
-                if board_w[y][x] == 0 : cnt += 1
+                if board[y][x] == 0 : cnt += 1
 
         #return (size - cnt) / size
         return (size - cnt)
@@ -325,7 +325,7 @@ class ThinkBombliss:
     # refactor
     def compose_mino(self, board, mino, px, py):
         b = [[0 for i in xrange(10)] for j in xrange(22)]
-        c = [[0 for i in xrange(10)] for j in xrange(22)]
+        #c = [[0 for i in xrange(10)] for j in xrange(22)]
         #print py,len(mino)
 
         for y in range(py, py+len(mino)) :
@@ -334,8 +334,8 @@ class ThinkBombliss:
                 b[y][x] = mino[y-py][x-px]
         for y in xrange(len(board)) :
             for x in xrange(len(board[0])):
-                if b[y][x] == 1 or board[y][x] == 1 : c[y][x] = 1
-        return c
+                if b[y][x] == 1 or board[y][x] == 1 : b[y][x] = 1
+        return b
 
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
@@ -360,16 +360,6 @@ class ThinkBombliss:
                 canditate_tmp.append(norm_ev_val)
             canditate.append(canditate_tmp)
             canditate_tmp = []
-
-#        min_val = 10000
-#        for i in range(0, len(canditate)) :
-#            for j in range(0, len(canditate[i])):
-#                if min_val > canditate[i][j][0] :
-#                    min_val = canditate[i][j][0]
-#
-#        for i in range(0, len(canditate)) :
-#            for j in range(0, len(canditate[i])):
-#                canditate[i][j] = (canditate[i][j][0] - min_val) + canditate[i][j][1]
 
         print canditate
         for i in range(0, len(canditate)) :
