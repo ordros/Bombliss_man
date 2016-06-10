@@ -78,8 +78,9 @@ class CaptureBombliss:
 ## refactoring flag process
     def parse_next(self, clp = None):
         if clp == None : img = self.capture_window(NEXT_POS)
-        img = cv2.GaussianBlur(img, (11,11), 0)
-        img = self.binarize(img)
+        img = cv2.GaussianBluslr(img, (11,11), 0)
+        #img = self.binarize(img)
+        img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
         #cv2.imwrite("lj_binary.png", img)
         cor = []
         for i in self.imgs_next:
@@ -94,7 +95,7 @@ class CaptureBombliss:
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]
         if p[0] < 100 and p[1] < 100 and p[2] < 100 : return True
-        else: return False
+        return False
 
     def gen_board_img(self, name = "board.png"):
         board = self.board
@@ -125,16 +126,10 @@ class CaptureBombliss:
 
     def diff(self, img1, img2):
         cnt = 0
-        p = 0
-        out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
         for y in xrange(len(img1)):
             for x in xrange(len(img1[0])):
                 if list(img1[y][x]) == list(img2[y][x]) :
                     cnt += 1
-                    out[y][x] = [255, 255, 255]
-                else : out[y][x] = [0, 0, 0]
-            #if cnt >  : p += 1
-            #cnt = 0
         return cnt
 
 if __name__ == '__main__':

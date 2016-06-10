@@ -16,7 +16,7 @@ TETRIMINOS = {
      ,
 "Z":[
     [[1, 1, 0],
-     [0, 1, 1 ]],
+     [0, 1, 1]],
 
     [[0, 1],
      [1, 1],
@@ -257,10 +257,10 @@ class ThinkBombliss:
         #size = (len(mino)) * (len(mino[0])+2)
         #size = (len(mino)+2) * (len(mino[0])+2)
         #for y in xrange(py-1, py+len(mino)+1):
-        size = (len(mino)) * (len(mino[0]))
-        for y in xrange(py, py+len(mino)):
+        size = (len(mino)+1) * (len(mino[0]))
+        for y in xrange(py, py+len(mino)+1):
             for x in xrange(px, px+len(mino[0])):
-                if board[y][x] == 0 : cnt += 1
+                if board_w[y][x] == 0 : cnt += 1
 
         #return (size - cnt) / size
         return (size - cnt)
