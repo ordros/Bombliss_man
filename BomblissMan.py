@@ -32,8 +32,8 @@ class BomblissMan:
         t = think_bombliss.ThinkBombliss(boardsize=(10,22))
         c.parse_next()
 
-        #soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #soc.connect((self.server, self.port))
+        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        soc.connect((self.server, self.port))
 
         while True:
             c.parse_next()
@@ -47,7 +47,7 @@ class BomblissMan:
                 choice = t.think(c.whitning_board(c.board), w)
                 print choice,":",w
                 al = ALIGN[w][int(choice[1])]
-                xpos, sel, ypos, align
+                # xpos, sel, ypos, align
                 soc.send(str(choice[0])+"_"+str(choice[1])+"_"+str(choice[2])+"_"+str(al))
 
             c.current_mino = c.next_mino

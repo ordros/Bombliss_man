@@ -251,6 +251,8 @@ class ThinkBombliss:
 
     def eval_space3(self, board, mino, px, py):
         b = self.compose_mino(board, mino, px, py)
+        #for i in b: print i
+
         board_w = self.make_frame(b)
         cnt = 0
         size = (len(mino)) * (len(mino[0]))
@@ -265,7 +267,7 @@ class ThinkBombliss:
         cnt = 0
         penalty_adjacent = 0
         b = self.compose_mino(board, mino, px, py)
-        board_w = make_frame(b)
+        board_w = self.make_frame(b)
         for y in xrange(1, len(board)+1):
             for x in xrange(1, len(board[0])+1):
                 above = board_w[y+1][x]
@@ -295,7 +297,7 @@ class ThinkBombliss:
                     if board_w[y+1][x] == 2 or board_w[y-1][x] == 2 or board_w[y][x+1] == 2 or board_w[y][x-1] == 2 : penalty_adjacent += 1
         #for w in board_w:
         #    print w
-        return penalty_adjacent + cnt
+        return -1*(penalty_adjacent + cnt)
 
     def eval_space(self, board):
         match_blocks = 0
@@ -320,31 +322,29 @@ class ThinkBombliss:
     # refactor
     def compose_mino(self, board, mino, px, py):
         b = [[0 for i in xrange(10)] for j in xrange(22)]
-        #c = [[0 for i in xrange(10)] for j in xrange(22)]
-        #print py,len(mino)
 
         for y in range(py, py+len(mino)) :
             for x in range(px, px+len(mino[0])) :
-                #print x,y,px,py
                 b[y][x] = mino[y-py][x-px]
+
         for y in xrange(len(board)) :
             for x in xrange(len(board[0])):
+                #if y-py > 0 and y-py < len(mino) and x-px > 0 and x-px < len(mino[0]) :
                 if b[y][x] == 1 or board[y][x] == 1 : b[y][x] = 1
         return b
 
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
         ev_space = self.eval_space3(board, mino, px, ev_ypos)
-        return (ev_ypos+len(mino)-1, ev_space)
+        ev_2 = self.eval_space2(board, mino, px, ev_ypos)
+        return (ev_ypos+len(mino)-1, ev_space, ev_2)
 
     # refactor
     def think(self, board, current_mino):
         canditate = []
         canditate_tmp = []
         mino = TETRIMINOS[current_mino]
-        #max_ev_height = 0
-        #min_ev_space = 1000
-        #weight_penalty = 5
+
         max_ev_val = 0
         max_xpos = 0
         max_sel = 0
@@ -354,26 +354,17 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0, self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0])+float(ev_val[1])/1000
+                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000 + float(ev_val[2])/1000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel
                     max_xpos = xpos
-                    ypos = ev_val[0]#-len(mino)+1
-                #norm_ev_val = (float(ev_val[0]), float(ev_val[1]))
-                #norm_ev_val = float(ev_val[0])
-                #canditate_tmp.append(norm_ev_val)
-            #canditate.append(canditate_tmp)
-            #canditate_tmp = []
+                    ypos = ev_val[0]
 
-        #print canditate
-        #for i in range(0, len(canditate)) :
-        #    for j in range(0, len(canditate[i])):
-        #        if max_ev_height < canditate[i][j]:
-        #            max_ev_height = canditate[i][j]
-        #            max_xpos = j
-        #            max_sel = i
-        #return (max_xpos, max_sel, self.fall(board, mino[max_sel], max_xpos))
+                canditate_tmp.append(norm_ev_val)
+            canditate.append(canditate_tmp)
+            canditate_tmp = []
+        print canditate
         return (max_xpos, max_sel, ypos)
 
 if __name__ == '__main__':
@@ -402,5 +393,5 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
-         [1,1,0,0,0,1,1,1,1,1]]
+         [1,1,0,1,1,1,1,1,1,1]]
     print t.think(board,"T")
