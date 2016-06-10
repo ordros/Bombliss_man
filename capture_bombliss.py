@@ -36,11 +36,11 @@ class CaptureBombliss:
         self.board = value
 
     def whitning_board(self, board):
-        b = board
+        #b = board
         for i in xrange(len(board)):
             if i < 2 :
-                b[i] = [0 for x in xrange(len(board[0]))]
-        return b
+                board[i] = [0 for x in xrange(len(board[0]))]
+        return board
 
     def get_current_mino(self):
         return NEXT_MINOS[self.current_mino]
@@ -77,13 +77,18 @@ class CaptureBombliss:
 
 ## refactoring flag process
     def parse_next(self, clp = None):
+        rate_comp = 6
+
         if clp == None : img = self.capture_window(NEXT_POS)
-        img = cv2.GaussianBluslr(img, (11,11), 0)
-        #img = self.binarize(img)
-        img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
-        #cv2.imwrite("lj_binary.png", img)
+        img = cv2.GaussianBlur(img, (11,11), 0)
+        img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
+        img = self.binarize(img)
         cor = []
+        #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
+        #cv2.imwrite("lj_binary.png", img)
+
         for i in self.imgs_next:
+            i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
             cor.append(self.diff(img, i))
 
         if not self.current_mino == self.next_mino:

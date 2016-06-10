@@ -222,7 +222,6 @@ ILLEGAL_BLOCK = [
 ]
 
 class ThinkBombliss:
-    ##
     def __init__(self, boardsize):
         self.boardsize_x = boardsize[0]
         self.boardsize_y = boardsize[1]
@@ -254,16 +253,12 @@ class ThinkBombliss:
         b = self.compose_mino(board, mino, px, py)
         board_w = self.make_frame(b)
         cnt = 0
-        #size = (len(mino)) * (len(mino[0])+2)
-        #size = (len(mino)+2) * (len(mino[0])+2)
-        #for y in xrange(py-1, py+len(mino)+1):
-        size = (len(mino)+1) * (len(mino[0]))
-        for y in xrange(py, py+len(mino)+1):
+        size = (len(mino)) * (len(mino[0]))
+
+        for y in xrange(py, py+len(mino)):
             for x in xrange(px, px+len(mino[0])):
                 if board_w[y][x] == 0 : cnt += 1
-
-        #return (size - cnt) / size
-        return (size - cnt)
+        return cnt
 
     # refactoring
     def eval_space2(self, board, mino, px, py):
@@ -347,29 +342,39 @@ class ThinkBombliss:
         canditate = []
         canditate_tmp = []
         mino = TETRIMINOS[current_mino]
-        max_ev_height = 0
-        min_ev_space = 1000
-        weight_penalty = 5
+        #max_ev_height = 0
+        #min_ev_space = 1000
+        #weight_penalty = 5
+        max_ev_val = 0
+        max_xpos = 0
+        max_sel = 0
+        norm_ev_val = 0
+        ypos = 0
 
         for sel in range(0, len(mino)):
-            for xpos in range(0,self.boardsize_x-len(mino[sel][0])+1):
+            for xpos in range(0, self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
                 norm_ev_val = float(ev_val[0])+float(ev_val[1])/1000
+                if max_ev_val < norm_ev_val :
+                    max_ev_val = norm_ev_val
+                    max_sel = sel
+                    max_xpos = xpos
+                    ypos = ev_val[0]#-len(mino)+1
                 #norm_ev_val = (float(ev_val[0]), float(ev_val[1]))
                 #norm_ev_val = float(ev_val[0])
-                canditate_tmp.append(norm_ev_val)
-            canditate.append(canditate_tmp)
-            canditate_tmp = []
+                #canditate_tmp.append(norm_ev_val)
+            #canditate.append(canditate_tmp)
+            #canditate_tmp = []
 
-        print canditate
-        for i in range(0, len(canditate)) :
-            for j in range(0, len(canditate[i])):
-                if max_ev_height < canditate[i][j]:
-                    max_ev_height = canditate[i][j]
-                    max_xpos = j
-                    max_sel = i
-        return (max_xpos, max_sel, self.fall(board, mino[max_sel], max_xpos))
-#       return (max_xpos, max_sel)
+        #print canditate
+        #for i in range(0, len(canditate)) :
+        #    for j in range(0, len(canditate[i])):
+        #        if max_ev_height < canditate[i][j]:
+        #            max_ev_height = canditate[i][j]
+        #            max_xpos = j
+        #            max_sel = i
+        #return (max_xpos, max_sel, self.fall(board, mino[max_sel], max_xpos))
+        return (max_xpos, max_sel, ypos)
 
 if __name__ == '__main__':
 
@@ -398,4 +403,4 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [1,1,0,0,0,1,1,1,1,1]]
-    print t.think(board,"L")
+    print t.think(board,"T")
