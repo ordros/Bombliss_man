@@ -1,225 +1,7 @@
-
 import sys
 from itertools import chain
 import time
-
-## separate to some file
-TETRIMINOS = {
-"I":[
-    [[1, 1, 1, 1]],
-
-    [[1],
-     [1],
-     [1],
-     [1]]
-     ]
-     ,
-"Z":[
-    [[1, 1, 0],
-     [0, 1, 1]],
-
-    [[0, 1],
-     [1, 1],
-     [1, 0]]
-     ]
-     ,
-"J":[
-    [[1, 1, 1],
-     [0, 0, 1]],
-
-    [[0, 1],
-     [0, 1],
-     [1, 1]],
-
-    [[1, 0, 0],
-     [1, 1, 1]],
-
-    [[1, 1],
-     [1, 0],
-     [1, 0]]
-
-     ]
-     ,
-"T":[
-    [[1, 1, 1],
-     [0, 1, 0]],
-
-    [[0, 1],
-     [1, 1],
-     [0, 1]],
-
-    [[0, 1, 0],
-     [1, 1, 1]],
-
-    [[1, 0],
-     [1, 1],
-     [1, 0]]
-
-     ]
-     ,
-"O":[
-    [[1, 1],
-     [1, 1]]
-     ]
-     ,
-"S":[
-    [[0, 1, 1],
-     [1, 1, 0]],
-
-    [[1, 0],
-     [1, 1],
-     [0, 1]]
-     ]
-     ,
-"L":[
-    [[1, 1, 1],
-     [1, 0, 0]],
-
-    [[1, 1],
-     [0, 1],
-     [0, 1]],
-
-    [[0, 0, 1],
-     [1, 1, 1]],
-
-    [[1, 0],
-     [1, 0],
-     [1, 1]]
-     ]
-     ,
- "LJ":[
-     [[1, 1, 1],
-      [1, 0, 0],
-      [1, 0, 0]],
-
-     [[1, 1, 1],
-      [0, 0, 1],
-      [0, 0, 1]],
-
-     [[0, 0, 1],
-      [0, 0, 1],
-      [1, 1, 1]],
-
-     [[1, 0, 0],
-      [1, 0, 0],
-      [1, 1, 1]]
-      ]
-      ,
-  "O1":[
-     [[1, 1, 1],
-      [0, 1, 1]],
-
-     [[0, 1],
-      [1, 1],
-      [1, 1]],
-
-     [[1, 1, 0],
-      [1, 1, 1]]
-      ,
-     [[1, 1],
-      [1, 1],
-      [1, 0]],
-      ],
-  "O2":[
-     [[1, 1, 1],
-      [1, 1, 0]],
-
-     [[1, 1],
-      [1, 1],
-      [0, 1]],
-
-     [[0, 1, 1],
-      [1, 1, 1]],
-
-     [[1, 0],
-      [1, 1],
-      [1, 1]],
-      ]
-      ,
-  "I1":[
-     [[1, 1, 1]],
-
-     [[1],
-      [1],
-      [1]]
-      ]
-      ,
-  "I2":[
-     [[1, 1, 1, 1, 1]],
-
-     [[1],
-      [1],
-      [1],
-      [1],
-      [1]]
-      ]
-      ,
-
-  "J1":[
-     [[1, 1, 1, 1],
-      [0, 0, 0, 1]],
-
-     [[0, 1],
-      [0, 1],
-      [0, 1],
-      [1, 1]],
-
-     [[1, 0, 0, 0],
-      [1, 1, 1, 1]],
-
-     [[1, 1],
-      [1, 0],
-      [1, 0],
-      [1, 0]],
-      ]
-      ,
-
-  "L1":[
-     [[1, 1, 1, 1],
-      [1, 0, 0, 0]],
-
-     [[1, 1],
-      [0, 1],
-      [0, 1],
-      [0, 1]],
-
-     [[0, 0, 0, 1],
-      [1, 1, 1, 1]],
-
-     [[1, 0],
-      [1, 0],
-      [1, 0],
-      [1, 1]],
-      ]
-}
-
-
-
-
-ILLEGAL_BLOCK = [
-    [[1, 1],
-     [1, 0],
-     [1, 1]],
-
-    [[1, 1],
-     [0, 1],
-     [1, 1]],
-
-    [[1, 1, 1],
-     [1, 0, 1]],
-
-    [[1, 0, 1],
-     [1, 1, 1]],
-
-    [[1, 1, 1],
-     [1, 0, 1],
-     [1, 1, 1]],
-
-    [[0, 1],
-     [1, 0],
-     [1, 0],
-     [1, 1]]
-]
+from config_bombliss import TETRIMINOS
 
 class ThinkBombliss:
     def __init__(self, boardsize):
@@ -248,6 +30,11 @@ class ThinkBombliss:
         board_w.append([1 for x in xrange(len(board[0])+2)])
 
         return board_w
+    def eval_space4(self, board, mino, px, py):
+        one_sum = 0
+        for i in range(py, len(board)):
+            one_sum += sum(board[i])
+        return float(one_sum) / ((len(board)-py)*len(board[0]))
 
     def eval_space3(self, board, mino, px, py):
         b = self.compose_mino(board, mino, px, py)
@@ -291,10 +78,11 @@ class ThinkBombliss:
                         cnt += 1
                         board_w[y][x] = 2
 
-        for y in xrange(1, len(board)+1):
-            for x in xrange(1, len(board[0])+1):
-                if board_w[y][x] == 2 :
-                    if board_w[y+1][x] == 2 or board_w[y-1][x] == 2 or board_w[y][x+1] == 2 or board_w[y][x-1] == 2 : penalty_adjacent += 1
+#        for y in xrange(1, len(board)+1):
+#            for x in xrange(1, len(board[0])+1):
+#                if board_w[y][x] == 2 :
+#                    if board_w[y+1][x] == 2 or board_w[y-1][x] == 2 or board_w[y][x+1] == 2 or board_w[y][x-1] == 2 : penalty_adjacent += 1
+
         #for w in board_w:
         #    print w
         return -1*(penalty_adjacent + cnt)
@@ -336,7 +124,7 @@ class ThinkBombliss:
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
         ev_space = self.eval_space3(board, mino, px, ev_ypos)
-        ev_2 = self.eval_space2(board, mino, px, ev_ypos)
+        ev_2 = self.eval_space4(board, mino, px, ev_ypos)
         return (ev_ypos+len(mino)-1, ev_space, ev_2)
 
     # refactor

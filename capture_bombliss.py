@@ -4,15 +4,7 @@ import time
 import numpy as np
 import os
 
-## separate to config files?
-NEXT_MINOS = {0:"I", 1:"Z", 2:"J", 3:"O", 4:"S", 5:"T", 6:"L", 7:"LJ", 8:"O1", 9:"L1", 10:"J1", 11:"I1", 12:"I2", 13:"O2"}
-
-WINDOW_POS = (1308, 273, 270, 528) # xpos, ypos, window_xsize, window_ysize
-NEXT_POS = (1391, 233, 100, 30)
-NEXT_IMGS = ["next_imgs/"+x[1]+"_binary.png" for x in NEXT_MINOS.items()]
-
-CHIP_X = 27
-CHIP_Y = 24
+from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y
 
 class CaptureBombliss:
     def __init__(self):
@@ -52,7 +44,7 @@ class CaptureBombliss:
 
 ## refactoring flag process
     def parse_chips(self, clp = None):
-        num_stop = 3
+        num_stop = 5
         board = self.board
         if clp == None : clp = self.capture_window(WINDOW_POS)
         for y in range(CHIP_Y, len(clp)+1, CHIP_Y):
@@ -66,7 +58,7 @@ class CaptureBombliss:
         self.board = board
         self.cnt += 1
 
-        if self.next_flag == 0 and (sum(board[0]) > 0 or sum(board[1])) and self.cnt > num_stop:
+        if self.next_flag == 0 and (sum(board[0]) > 0 or sum(board[1]) > 0) and self.cnt > num_stop:
             self.next_flag = 1
             self.cnt = 0
             return
@@ -77,7 +69,7 @@ class CaptureBombliss:
 
 ## refactoring flag process
     def parse_next(self, clp = None):
-        rate_comp = 6
+        rate_comp = 1
 
         if clp == None : img = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(img, (11,11), 0)
@@ -91,11 +83,13 @@ class CaptureBombliss:
             i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
             cor.append(self.diff(img, i))
 
+        self.next_mino = cor.index(max(cor))
+
         if not self.current_mino == self.next_mino:
+            print "Next?"
             self.next_flag = 1
             self.current_mino = self.next_mino
 
-        self.next_mino = cor.index(max(cor))
 
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]

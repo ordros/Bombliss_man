@@ -4,23 +4,7 @@ import threading
 import time
 import cv2
 import socket
-
-ALIGN = {
-        "I":[3, 5],
-        "Z":[3, 3],
-        "J":[3, 3, 3, 4],
-        "T":[3, 3, 3, 4],
-        "O":[4],
-        "S":[3, 3],
-        "L":[3, 3, 3, 4],
-        "LJ":[4, 3, 3, 4],
-        "I2":[2, 4],
-        "I1":[3, 4],
-        "L1":[3, 4, 3, 4],
-        "J1":[3, 4, 3, 4],
-        "O1":[3, 3, 3, 4],
-        "O2":[3, 3, 3, 4]
-        }
+from config_bombliss import ALIGN
 
 class BomblissMan:
     def __init__(self, server, port):
@@ -36,8 +20,9 @@ class BomblissMan:
         soc.connect((self.server, self.port))
 
         while True:
-            c.parse_next()
             c.parse_chips()
+            c.parse_next()
+
             w = c.get_current_mino()
             print w + "mino"
             if c.next_flag == 1 :
@@ -51,7 +36,7 @@ class BomblissMan:
                 soc.send(str(choice[0])+"_"+str(choice[1])+"_"+str(choice[2])+"_"+str(al))
 
             c.current_mino = c.next_mino
-            time.sleep(0.001)
+            time.sleep(0.02)
 
 if __name__ == '__main__':
 
