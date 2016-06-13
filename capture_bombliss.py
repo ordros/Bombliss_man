@@ -73,14 +73,14 @@ class CaptureBombliss:
 
         if clp == None : img = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(img, (11,11), 0)
-        img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
+        #img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
         img = self.binarize(img)
         cor = []
         #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
         #cv2.imwrite("lj_binary.png", img)
 
         for i in self.imgs_next:
-            i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
+            #i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
             cor.append(self.diff(img, i))
 
         self.next_mino = cor.index(max(cor))
@@ -89,7 +89,6 @@ class CaptureBombliss:
             print "Next?"
             self.next_flag = 1
             self.current_mino = self.next_mino
-
 
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]

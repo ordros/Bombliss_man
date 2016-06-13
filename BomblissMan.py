@@ -30,10 +30,13 @@ class BomblissMan:
                 #c.gen_board_img()
                 print "Next!"
                 choice = t.think(c.whitning_board(c.board), w)
-                print choice,":",w
+                #print choice,":", w
                 al = ALIGN[w][int(choice[1])]
                 # xpos, sel, ypos, align
-                soc.send(str(choice[0])+"_"+str(choice[1])+"_"+str(choice[2])+"_"+str(al))
+                msg = str(choice[0] - al)+"_"+str(choice[1])+"_"+str(choice[2])
+                msg = msg + " "*(30 - len(msg))
+                print msg, ":", w
+                soc.send(msg)
 
             c.current_mino = c.next_mino
             time.sleep(0.02)
