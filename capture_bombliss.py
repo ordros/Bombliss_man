@@ -10,7 +10,6 @@ class CaptureBombliss:
     def __init__(self):
         self.next_mino = 0
         self.current_mino = 0
-        self.next_flag = 0
         self.cnt = 0
 
         self.board = [[None for c in range(WINDOW_POS[2]/CHIP_X)] for l in range(WINDOW_POS[3]/CHIP_Y)]
@@ -42,9 +41,25 @@ class CaptureBombliss:
         img = np.asarray(screen)
         return img
 
+
+    def check_next(self):
+        board = self.board
+        num_stop = 5
+        self.cnt += 1
+        if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
+            print "change.", self.cnt
+            self.current_mino = self.next_mino
+            self.cnt = 0
+            return True
+
+        if (sum(board[0]) > 0 or sum(board[1]) > 0) and self.cnt > num_stop:
+            print "glimpse.", self.cnt
+            self.cnt = 0
+            return True
+        return False
+
 ## refactoring flag process
     def parse_chips(self, clp = None):
-        num_stop = 5
         board = self.board
         if clp == None : clp = self.capture_window(WINDOW_POS)
         for y in range(CHIP_Y, len(clp)+1, CHIP_Y):
@@ -56,21 +71,10 @@ class CaptureBombliss:
                 else:
                     board[y/CHIP_Y-1][x/CHIP_X-1] = 1
         self.board = board
-        self.cnt += 1
-
-        if self.next_flag == 0 and (sum(board[0]) > 0 or sum(board[1]) > 0) and self.cnt > num_stop:
-            self.next_flag = 1
-            self.cnt = 0
-            return
-
-        if self.next_flag == 1 :
-            self.next_flag = 0
-            return
 
 ## refactoring flag process
     def parse_next(self, clp = None):
         rate_comp = 1
-
         if clp == None : img = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(img, (11,11), 0)
         #img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
@@ -84,11 +88,6 @@ class CaptureBombliss:
             cor.append(self.diff(img, i))
 
         self.next_mino = cor.index(max(cor))
-
-        if not self.current_mino == self.next_mino:
-            print "Next?"
-            self.next_flag = 1
-            self.current_mino = self.next_mino
 
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]
