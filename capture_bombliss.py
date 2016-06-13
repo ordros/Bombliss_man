@@ -86,7 +86,6 @@ class CaptureBombliss:
         for i in self.imgs_next:
             #i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
             cor.append(self.diff(img, i))
-
         self.next_mino = cor.index(max(cor))
 
     def decide_chip(self, chip):
@@ -123,16 +122,25 @@ class CaptureBombliss:
 
     def diff(self, img1, img2):
         cnt = 0
+        out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
+
         for y in xrange(len(img1)):
             for x in xrange(len(img1[0])):
                 if list(img1[y][x]) == list(img2[y][x]) :
                     cnt += 1
+                    out[y][x] = [0, 0, 0]
+                else:
+                    out[y][x] = [255, 255, 255]
+        cv2.imwrite("hoge.png", np.asarray(out))
         return cnt
 
 if __name__ == '__main__':
 
     b = CaptureBombliss()
     b.parse_next()
+    #b.diff(b.binarize(b.capture_window(NEXT_POS)), b.imgs_next[1])
+    #cv2.imwrite("hoge2.png",b.binarize(b.capture_window(NEXT_POS)))
+    print NEXT_MINOS[b.next_mino]
     #b.parse_chips()
 
 """

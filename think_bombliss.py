@@ -124,8 +124,8 @@ class ThinkBombliss:
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
         ev_space = self.eval_space3(board, mino, px, ev_ypos)
-        ev_2 = self.eval_space4(board, mino, px, ev_ypos)
-        return (ev_ypos+len(mino)-1, ev_space, ev_2)
+        #ev_2 = self.eval_space4(board, mino, px, ev_ypos)
+        return (ev_ypos+len(mino)-1, ev_space)#, ev_2)
 
     # refactor
     def think(self, board, current_mino):
@@ -142,7 +142,7 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0, self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000 + float(ev_val[2])/1000
+                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000# + float(ev_val[2])/1000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel

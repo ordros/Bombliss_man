@@ -14,7 +14,7 @@ class BomblissMan:
     def go(self):
         c = capture_bombliss.CaptureBombliss()
         t = think_bombliss.ThinkBombliss(boardsize=(10,22))
-        #c.parse_next()
+        c.parse_next()
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((self.server, self.port))
@@ -26,17 +26,20 @@ class BomblissMan:
             print w + "mino"
             if c.check_next() :
                 #c.gen_board_img()
+                print "============"
                 print "Next!"
                 choice = t.think(c.whitning_board(c.board), w)
                 #print choice,":", w
                 al = ALIGN[w][int(choice[1])]
                 # xpos, sel, ypos, align
-                msg = str(choice[0] - al)+"_"+str(choice[1])+"_"+str(choice[2])
+                msg = str(choice[0])+"_"+str(choice[1])+"_"+str(choice[2])+"_"+str(al)
                 msg = msg + " "*(30 - len(msg))
                 print w+"mino, xpos: "+str(choice[0])+", sel: "+str(choice[1])+", ypos: "+str(choice[2])
                 soc.send(msg)
+                print "============"
+                #c.gen_board_img()
                 #c.current_mino = c.next_mino
-            time.sleep(0.02)
+            time.sleep(0.01)
 
 if __name__ == '__main__':
 
