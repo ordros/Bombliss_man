@@ -69,27 +69,24 @@ class ThinkBombliss:
                 if board_w[y][x] == 0 :
                     if above * under * left * right :
                         cnt += 1
-                        continue
                         #board_w[y][x] = 2
-                    if above * under * left :
+                    elif above * under * left :
                         cnt += 1
-                        continue
                         #board_w[y][x] = 2
-                    if above * under * right :
+                    elif above * under * right :
                         cnt += 1
-                        continue
                         #board_w[y][x] = 2
-                    if above * right * left :
+                    elif above * right * left :
                         cnt += 1
-                        continue
                         #board_w[y][x] = 2
-                    if right * under * left :
+                    elif right * under * left :
                         cnt += 1
-                        continue
                         #board_w[y][x] = 2
-                    if under * above :
+                    elif under * above :
                         cnt += 1
-                        continue
+                    elif left * right :
+                        cnt += 1
+
 #        for y in xrange(1, len(board)+1):
 #            for x in xrange(1, len(board[0])+1):
 #                if board_w[y][x] == 2 :

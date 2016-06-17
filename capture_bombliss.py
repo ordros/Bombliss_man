@@ -17,7 +17,7 @@ class CaptureBombliss:
         self.boardsize_x = (WINDOW_POS[2]/CHIP_X)
         self.boardsize_y = (WINDOW_POS[3]/CHIP_Y)
         self.imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
-        self.next_comprate = 3
+        self.next_comprate = 2
         for i in self.imgs_next:
             self.imgs_next[self.imgs_next.index(i)] = cv2.resize(i, (len(i[0])/self.next_comprate, len(i)/self.next_comprate), interpolation=cv2.cv.CV_INTER_NN)
 
@@ -37,7 +37,7 @@ class CaptureBombliss:
 
     def check_next(self):
         board = self.board
-        num_stop = 10
+        num_stop = 5
         self.cnt += 1
 
         if (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
@@ -82,14 +82,14 @@ class CaptureBombliss:
         #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
         for i in self.imgs_next:
             cor.append(self.diff(img, i))
-        print min(cor)
-        if min(cor) < 30 : # when next_comprate=5
+        #print min(cor)
+        if min(cor) < 40 : # when next_comprate=5
             self.next_mino = cor.index(min(cor))
 
         #cv2.imwrite("hoge_"+str(NEXT_MINOS[self.next_mino])+".png", img)
 
     def decide_chip(self, chip):
-        p = chip[len(chip)/2][len(chip[0])/2]
+        p = chip[len(chip)/2][len(chip[0])/2] #center point
         if p[0] < 100 and p[1] < 100 and p[2] < 100 : return True
         return False
 
