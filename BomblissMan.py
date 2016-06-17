@@ -15,6 +15,8 @@ class BomblissMan:
         c = capture_bombliss.CaptureBombliss()
         t = think_bombliss.ThinkBombliss(boardsize=(10,22))
         c.parse_next()
+        c.parse_chips()
+        c.current_mino = c.next_mino
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((self.server, self.port))
@@ -23,11 +25,10 @@ class BomblissMan:
             c.parse_next()
             c.parse_chips()
             w = c.get_current_mino()
-            print w + "mino"
+            #print w + "mino"
             if c.check_next() :
-                #c.gen_board_img()
                 print "============"
-                print "Next!"
+                print "Next!", c.cnt
                 choice = t.think(c.whitning_board(c.board), w)
                 #print choice,":", w
                 al = ALIGN[w][int(choice[1])]
@@ -37,8 +38,8 @@ class BomblissMan:
                 print w+"mino, xpos: "+str(choice[0])+", sel: "+str(choice[1])+", ypos: "+str(choice[2])
                 soc.send(msg)
                 print "============"
+                c.current_mino = c.next_mino
                 #c.gen_board_img()
-                #c.current_mino = c.next_mino
             time.sleep(0.01)
 
 if __name__ == '__main__':
