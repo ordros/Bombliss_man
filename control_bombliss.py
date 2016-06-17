@@ -32,6 +32,7 @@ def press(sel):
         GPIO.output(PINS[sel], False)
 	time.sleep(wait)
 	#print "Press: " + PINS_STR[sel] 
+	#print PINS_STR[sel]
 
 def move(xpos, ypos, sel):
 	for i in xrange(sel):
@@ -51,9 +52,14 @@ def move(xpos, ypos, sel):
 	down(ypos)
 
 def down(d):
-	for i in xrange(d):
-		press(2)
-		time.sleep(0.02)
+	print "down..."
+	GPIO.output(PINS[2], True)
+	time.sleep(0.016*d)
+	GPIO.output(PINS[2], False)
+	print "stop."
+	#for i in xrange(d):
+	#	press(2)
+	#	time.sleep(0.02)
 
 	
 def main():
@@ -76,9 +82,9 @@ def main():
 				xpos = int(a[0])
 				sel = int(a[1])
 				ypos = int(a[2])
-				#align = int(a[3])
-				print xpos, ypos, sel
-				move(xpos, ypos, sel)
+				align = int(a[3])
+				print xpos-align, ypos, sel
+				move(xpos-align, ypos, sel)
 				
 		except Exception as e:
 			print str(e)
