@@ -37,17 +37,17 @@ class CaptureBombliss:
 
     def check_next(self):
         board = self.board
-        num_stop = 5
+        num_stop = 3
         self.cnt += 1
 
         if (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
-            print "glimpse.", self.cnt
+            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
             print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
             self.current_mino = self.next_mino
             self.cnt = 0
             #for i in board:
             #    print i
-            return True
+            return 1
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
@@ -56,8 +56,9 @@ class CaptureBombliss:
             self.cnt = 0
             #for i in board:
             #    print i
-            return True
-        return False
+            return 2
+        self.current_mino = self.next_mino
+        return 0
 
     def parse_chips(self, clp = None):
         board = self.board
@@ -82,9 +83,9 @@ class CaptureBombliss:
         #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
         for i in self.imgs_next:
             cor.append(self.diff(img, i))
-        #print min(cor)
-        if min(cor) < 40 : # when next_comprate=5
-            self.next_mino = cor.index(min(cor))
+        #print cor
+        if max(cor) > 700 : # when next_comprate=2
+            self.next_mino = cor.index(max(cor))
 
         #cv2.imwrite("hoge_"+str(NEXT_MINOS[self.next_mino])+".png", img)
 
@@ -127,7 +128,7 @@ class CaptureBombliss:
 
         for y in xrange(len(img1)):
             for x in xrange(len(img1[0])):
-                if not list(img1[y][x]) == list(img2[y][x]) :
+                if list(img1[y][x]) == list(img2[y][x]) :
                     cnt += 1
                     #out[y][x] = [0, 0, 0]
                 #else:
