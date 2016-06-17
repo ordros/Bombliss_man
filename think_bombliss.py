@@ -17,7 +17,7 @@ class ThinkBombliss:
                     if ypos+len(mino) > self.boardsize_y :
                         #print "Over."
                         return ypos-1
-                    if board[ypos+y][xpos+x] == 1 and mino[y][x] == 1 :
+                    if board[ypos+y][xpos+x] and mino[y][x] :
                         #print "Collision.",x,y,xpos,ypos
                         return ypos-1
         return ypos
@@ -46,7 +46,7 @@ class ThinkBombliss:
 
         for y in xrange(py, py+len(mino)):
             for x in xrange(px, px+len(mino[0])):
-                if board_w[y][x] == 0 : cnt += 1
+                if not board_w[y][x] : cnt += 1
         return cnt
 
     # refactoring
@@ -62,21 +62,21 @@ class ThinkBombliss:
                 left = board_w[y][x-1]
                 right = board_w[y][x+1]
                 if board_w[y][x] == 0 :
-                    if above * under * left * right == 1 :
+                    if above * under * left * right :
                         cnt += 1
-                        board_w[y][x] = 2
-                    if above * under * left == 1 :
+                        #board_w[y][x] = 2
+                    if above * under * left :
                         cnt += 1
-                        board_w[y][x] = 2
-                    if above * under * right == 1 :
+                        #board_w[y][x] = 2
+                    if above * under * right :
                         cnt += 1
-                        board_w[y][x] = 2
-                    if above * right * left == 1 :
+                        #board_w[y][x] = 2
+                    if above * right * left :
                         cnt += 1
-                        board_w[y][x] = 2
-                    if right * under * left == 1 :
+                        #board_w[y][x] = 2
+                    if right * under * left :
                         cnt += 1
-                        board_w[y][x] = 2
+                        #board_w[y][x] = 2
 
 #        for y in xrange(1, len(board)+1):
 #            for x in xrange(1, len(board[0])+1):
@@ -118,7 +118,7 @@ class ThinkBombliss:
         for y in xrange(len(board)) :
             for x in xrange(len(board[0])):
                 #if y-py > 0 and y-py < len(mino) and x-px > 0 and x-px < len(mino[0]) :
-                if b[y][x] == 1 or board[y][x] == 1 : b[y][x] = 1
+                if b[y][x] or board[y][x] : b[y][x] = 1
         return b
 
     def evaluate(self, board, mino, px):
