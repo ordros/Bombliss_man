@@ -17,10 +17,9 @@ class CaptureBombliss:
         self.boardsize_x = (WINDOW_POS[2]/CHIP_X)
         self.boardsize_y = (WINDOW_POS[3]/CHIP_Y)
         self.imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
-        self.next_comprate = 5
+        self.next_comprate = 3
         for i in self.imgs_next:
             self.imgs_next[self.imgs_next.index(i)] = cv2.resize(i, (len(i[0])/self.next_comprate, len(i)/self.next_comprate), interpolation=cv2.cv.CV_INTER_NN)
-
 
     def whitning_board(self, board):
         for i in xrange(len(board)):
@@ -38,18 +37,25 @@ class CaptureBombliss:
 
     def check_next(self):
         board = self.board
-        num_stop = 5
+        num_stop = 10
         self.cnt += 1
 
-        if (sum(board[0]) > 0 or sum(board[1]) > 0) and self.cnt > num_stop:
+        if (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
             print "glimpse.", self.cnt
+            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+            self.current_mino = self.next_mino
             self.cnt = 0
+            #for i in board:
+            #    print i
             return True
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
+            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
             self.current_mino = self.next_mino
             self.cnt = 0
+            #for i in board:
+            #    print i
             return True
         return False
 
@@ -66,7 +72,6 @@ class CaptureBombliss:
                     board[y/CHIP_Y-1][x/CHIP_X-1] = 1
         self.board = board
 
-## refactoring flag process
     def parse_next(self, clp = None):
         rate_comp = self.next_comprate
         if clp == None : img = self.capture_window(NEXT_POS)
@@ -75,10 +80,13 @@ class CaptureBombliss:
         img = self.binarize(img)
         cor = []
         #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
-        #cv2.imwrite("lj_binary.png", img)
         for i in self.imgs_next:
             cor.append(self.diff(img, i))
-        self.next_mino = cor.index(max(cor))
+        print min(cor)
+        if min(cor) < 30 : # when next_comprate=5
+            self.next_mino = cor.index(min(cor))
+
+        #cv2.imwrite("hoge_"+str(NEXT_MINOS[self.next_mino])+".png", img)
 
     def decide_chip(self, chip):
         p = chip[len(chip)/2][len(chip[0])/2]
@@ -114,26 +122,28 @@ class CaptureBombliss:
 
     def diff(self, img1, img2):
         cnt = 0
-        print len(img1), len(img2)
-        out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
+        #print len(img1), len(img2)
+        #out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
 
         for y in xrange(len(img1)):
             for x in xrange(len(img1[0])):
-                if list(img1[y][x]) == list(img2[y][x]) :
+                if not list(img1[y][x]) == list(img2[y][x]) :
                     cnt += 1
-                    out[y][x] = [0, 0, 0]
-                else:
-                    out[y][x] = [255, 255, 255]
-        cv2.imwrite("hoge.png", np.asarray(out))
+                    #out[y][x] = [0, 0, 0]
+                #else:
+                    #out[y][x] = [255, 255, 255]
+        #cv2.imwrite("hoge.png", np.asarray(out))
         return cnt
 
 if __name__ == '__main__':
 
     b = CaptureBombliss()
-    b.parse_next()
+    while 1:
+        b.parse_next()
     #b.diff(b.binarize(b.capture_window(NEXT_POS)), b.imgs_next[1])
     #cv2.imwrite("hoge2.png",b.binarize(b.capture_window(NEXT_POS)))
-    print NEXT_MINOS[b.next_mino]
+        print NEXT_MINOS[b.next_mino]
+        time.sleep(0.02)
     #b.parse_chips()
 
 """
