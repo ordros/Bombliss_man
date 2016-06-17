@@ -17,17 +17,12 @@ class CaptureBombliss:
         self.boardsize_x = (WINDOW_POS[2]/CHIP_X)
         self.boardsize_y = (WINDOW_POS[3]/CHIP_Y)
         self.imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
+        self.next_comprate = 5
+        for i in self.imgs_next:
+            self.imgs_next[self.imgs_next.index(i)] = cv2.resize(i, (len(i[0])/self.next_comprate, len(i)/self.next_comprate), interpolation=cv2.cv.CV_INTER_NN)
 
-    @property
-    def board(self):
-        return self.board
-
-    @board.setter
-    def board(self, value):
-        self.board = value
 
     def whitning_board(self, board):
-        #b = board
         for i in xrange(len(board)):
             if i < 2 :
                 board[i] = [0 for x in xrange(len(board[0]))]
@@ -41,24 +36,23 @@ class CaptureBombliss:
         img = np.asarray(screen)
         return img
 
-
     def check_next(self):
         board = self.board
         num_stop = 5
         self.cnt += 1
-        if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
-            print "change.", self.cnt
-            self.current_mino = self.next_mino
-            self.cnt = 0
-            return True
 
         if (sum(board[0]) > 0 or sum(board[1]) > 0) and self.cnt > num_stop:
             print "glimpse.", self.cnt
             self.cnt = 0
             return True
+
+        if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
+            print "change.", self.cnt
+            self.current_mino = self.next_mino
+            self.cnt = 0
+            return True
         return False
 
-## refactoring flag process
     def parse_chips(self, clp = None):
         board = self.board
         if clp == None : clp = self.capture_window(WINDOW_POS)
@@ -74,17 +68,15 @@ class CaptureBombliss:
 
 ## refactoring flag process
     def parse_next(self, clp = None):
-        rate_comp = 1
+        rate_comp = self.next_comprate
         if clp == None : img = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(img, (11,11), 0)
-        #img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
+        img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
         img = self.binarize(img)
         cor = []
         #img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
         #cv2.imwrite("lj_binary.png", img)
-
         for i in self.imgs_next:
-            #i = cv2.resize(i, (len(i[0])/rate_comp, len(i)/rate_comp), interpolation=cv2.cv.CV_INTER_NN)
             cor.append(self.diff(img, i))
         self.next_mino = cor.index(max(cor))
 
@@ -101,7 +93,7 @@ class CaptureBombliss:
 
         for i in range(0, posy_img):
             for j in range(0, posx_img):
-                if board[i][j] == 1 : img[i, j] = [255, 255, 255]
+                if board[i][j] : img[i, j] = [255, 255, 255]
                 else : img[i, j] = [0, 0, 0]
 
         img = cv2.resize(img, (posx_img*10, posy_img*10), interpolation=cv2.cv.CV_INTER_NN)
@@ -122,6 +114,7 @@ class CaptureBombliss:
 
     def diff(self, img1, img2):
         cnt = 0
+        print len(img1), len(img2)
         out = [[0 for x in xrange(len(img1[0]))] for y in xrange(len(img1))]
 
         for y in xrange(len(img1)):
