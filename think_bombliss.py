@@ -30,11 +30,16 @@ class ThinkBombliss:
         board_w.append([1 for x in xrange(len(board[0])+2)])
 
         return board_w
+
     def eval_space4(self, board, mino, px, py):
         one_sum = 0
-        for i in range(py, len(board)):
-            one_sum += sum(board[i])
-        return float(one_sum) / ((len(board)-py)*len(board[0]))
+        b = self.compose_mino(board, mino, px, py)
+
+        #for i in range(py+2, len(b)):
+        #    one_sum += sum(b[i])
+        #return float(one_sum) #/ ((len(board)-py)*len(board[0]))
+
+        return sum(mino[len(mino)-1])
 
     def eval_space3(self, board, mino, px, py):
         b = self.compose_mino(board, mino, px, py)
@@ -42,9 +47,9 @@ class ThinkBombliss:
 
         board_w = self.make_frame(b)
         cnt = 0
-        size = (len(mino)) * (len(mino[0]))
+        size = (len(mino)+1) * (len(mino[0]))
 
-        for y in xrange(py, py+len(mino)):
+        for y in xrange(py, py+len(mino)+1):
             for x in xrange(px, px+len(mino[0])):
                 if not board_w[y][x] : cnt += 1
         return cnt
@@ -64,20 +69,27 @@ class ThinkBombliss:
                 if board_w[y][x] == 0 :
                     if above * under * left * right :
                         cnt += 1
+                        continue
                         #board_w[y][x] = 2
                     if above * under * left :
                         cnt += 1
+                        continue
                         #board_w[y][x] = 2
                     if above * under * right :
                         cnt += 1
+                        continue
                         #board_w[y][x] = 2
                     if above * right * left :
                         cnt += 1
+                        continue
                         #board_w[y][x] = 2
                     if right * under * left :
                         cnt += 1
+                        continue
                         #board_w[y][x] = 2
-
+                    if under * above :
+                        cnt += 1
+                        continue
 #        for y in xrange(1, len(board)+1):
 #            for x in xrange(1, len(board[0])+1):
 #                if board_w[y][x] == 2 :
@@ -85,7 +97,7 @@ class ThinkBombliss:
 
         #for w in board_w:
         #    print w
-        return -1*(penalty_adjacent + cnt)
+        return ((len(board)+1) * (len(board[0])+1)) - cnt
 
     def eval_space(self, board):
         match_blocks = 0
@@ -123,9 +135,9 @@ class ThinkBombliss:
 
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
-        ev_space = self.eval_space3(board, mino, px, ev_ypos)
-        #ev_2 = self.eval_space4(board, mino, px, ev_ypos)
-        return (ev_ypos+len(mino)-1, ev_space)#, ev_2)
+        ev_space = self.eval_space2(board, mino, px, ev_ypos)
+        ev_space_2 = self.eval_space4(board, mino, px, ev_ypos)
+        return (ev_ypos+len(mino)-1, ev_space, ev_space_2)
 
     # refactor
     def think(self, board, current_mino):
@@ -142,7 +154,7 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0, self.boardsize_x-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000# + float(ev_val[2])/1000
+                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000 + float(ev_val[2])/10000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel
@@ -181,5 +193,5 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
-         [1,1,0,1,1,1,1,1,1,1]]
-    print t.think(board,"T")
+         [1,1,1,1,1,1,1,1,1,1]]
+    print t.think(board,"I")
