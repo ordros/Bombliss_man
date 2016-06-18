@@ -30,7 +30,6 @@ class BomblissMan:
                 print "============"
                 print "Next!", c.cnt
                 choice = t.think(c.whitning_board(c.board), w)
-                #print choice,":", w
                 al = ALIGN[w][int(choice[1])]
                 # xpos, sel, ypos, align
                 msg = str(choice[0])+"_"+str(choice[1])+"_"+str(choice[2])+"_"+str(al)
@@ -39,7 +38,6 @@ class BomblissMan:
                 soc.send(msg)
                 print "============"
                 c.current_mino = c.next_mino
-                #c.gen_board_img()
             time.sleep(0.01)
 
 if __name__ == '__main__':

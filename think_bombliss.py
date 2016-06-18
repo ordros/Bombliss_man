@@ -35,10 +35,6 @@ class ThinkBombliss:
         one_sum = 0
         b = self.compose_mino(board, mino, px, py)
 
-        #for i in range(py+2, len(b)):
-        #    one_sum += sum(b[i])
-        #return float(one_sum) #/ ((len(board)-py)*len(board[0]))
-
         return sum(mino[len(mino)-1])
 
     def eval_space3(self, board, mino, px, py):
@@ -87,13 +83,6 @@ class ThinkBombliss:
                     elif left * right :
                         cnt += 1
 
-#        for y in xrange(1, len(board)+1):
-#            for x in xrange(1, len(board[0])+1):
-#                if board_w[y][x] == 2 :
-#                    if board_w[y+1][x] == 2 or board_w[y-1][x] == 2 or board_w[y][x+1] == 2 or board_w[y][x-1] == 2 : penalty_adjacent += 1
-
-        #for w in board_w:
-        #    print w
         return ((len(board)+1) * (len(board[0])+1)) - cnt
 
     def eval_space(self, board):
@@ -126,7 +115,6 @@ class ThinkBombliss:
 
         for y in xrange(len(board)) :
             for x in xrange(len(board[0])):
-                #if y-py > 0 and y-py < len(mino) and x-px > 0 and x-px < len(mino[0]) :
                 if b[y][x] or board[y][x] : b[y][x] = 1
         return b
 
