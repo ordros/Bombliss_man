@@ -4,6 +4,15 @@ BomblissMan
 ## Description
 Bombliss AI on SNES.    
 Using OpenCV, Python2.7, and Raspberry Pi(to operate SNES)  
+
+## Requirement
+#Python
+cv2, pyautogui
+#Device
+USB capture device.
+I use GV-USB2(IODATA)
+
+
 ## Usage
 Edit WINDOW_POS, NEXT_POS in config_bombliss.py to adjust your environment.  
 WINDOW_POS = (a, b, c, d)  
