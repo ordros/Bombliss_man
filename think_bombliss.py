@@ -149,9 +149,9 @@ class ThinkBombliss:
         ypos = 0
 
         for sel in range(0, len(mino)):
-            for xpos in range(0, self.boardsize_x-len(mino[sel][0])+1):
+            for xpos in range(0, len(board[0])-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0]) + float(ev_val[1])/1000 + float(ev_val[2])/10000
+                norm_ev_val = float(ev_val[0])/100 + float(ev_val[1])/1000 + float(ev_val[2])/10000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel
