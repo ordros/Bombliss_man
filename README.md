@@ -12,12 +12,10 @@ USB capture device and Raspberry Pi.
 I use GV-USB2(IODATA) and Raspberry Pi 2B.  
 
 ## Usage
-Edit WINDOW_POS, NEXT_POS in config_bombliss.py to adjust your environment.  
-WINDOW_POS = (a, b, c, d)  
-a, b is position top left corner of board.  
-c, d is boardsize of x-axis and y-axis.  
+Edit window in config_bombliss_snes.yaml to adjust your environment.  
+position(left-up-corner), size = [x, y]   
 
-Modify SNES Controller so that Raspberry Pi can operate this with GPIO access.   
+Modify SNES controller so that Raspberry Pi can operate this with GPIO access.   
 
 On Raspberry Pi,  
 `$python control_bombliss.py`  

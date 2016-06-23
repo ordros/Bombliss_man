@@ -31,14 +31,14 @@ def press(sel):
        	time.sleep(wait)
         GPIO.output(PINS[sel], False)
 	time.sleep(wait)
-	#print "Press: " + PINS_STR[sel] 
+	#print "Press: " + PINS_STR[sel]
 	#print PINS_STR[sel]
 
 def move(xpos, ypos, sel):
 	for i in xrange(sel):
 		press(3)
 	time.sleep(0.05)
-	
+
 	if xpos < 0 :
 		for i in xrange(abs(xpos)):
 			press(1)
@@ -61,7 +61,7 @@ def down(d):
 	#	press(2)
 	#	time.sleep(0.02)
 
-	
+
 def main():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     	sock.bind((host, port))
@@ -78,17 +78,17 @@ def main():
 		print "recv.", msg
 		try:
 			a = msg.split("_")
-			if a : 
+			if a :
 				xpos = int(a[0])
 				sel = int(a[1])
 				ypos = int(a[2])
 				align = int(a[3])
 				print xpos-align, ypos, sel
 				move(xpos-align, ypos, sel)
-				
+
 		except Exception as e:
 			print str(e)
-			
+
 			GPIO.cleanup()
 			sock.close()
 			break
