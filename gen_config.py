@@ -2,24 +2,24 @@ import yaml
 
 class generateConfig:
     def __init__(self, config_file):
-        fl = open(config_file)
-        self.data = yaml.load(fl)
+        with open(config_file) as fl:
+            self.data = yaml.load(fl)
         self.load_config()
-        fp = open(self.data["tetrimino_pattern"]).read()
-        self.TETRIMINOS = eval(fp)
 
     def load_config(self):
         data = self.data
         al = {}
-        tetriminos = []
+        next_minos = []
+        tetriminos = {}
         cnt = 0
         for d in data["tetriminos"].items():
             al.update({d[0]:d[1]["align"]})
-            tetriminos.append(d[0])
-            cnt += 1
+            next_minos.append(d[0])
+            tetriminos.update({d[0]:d[1]["form"]})
         self.ALIGN = al
-        self.NEXT_MINOS = tetriminos
+        self.NEXT_MINOS = next_minos
         self.chip_size = data["puzzle_chip"]["size"]
+        self.TETRIMINOS = tetriminos
 
     def gen_configfile(self):
         f = open("config_bombliss.py", "w")

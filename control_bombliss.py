@@ -5,7 +5,7 @@ import time
 import socket
 import threading
 
-
+#GPIO number
 RIGHT = 22
 LEFT = 4
 DOWN = 17

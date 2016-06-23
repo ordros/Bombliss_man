@@ -6,7 +6,8 @@ Bombliss AI on SNES.
 Using OpenCV, Python2.7, and Raspberry Pi(to operate SNES)  
 
 ## Requirement(Library)
-cv2, pyautogui  
+cv2, pyautogui, PyYaml
+Please install from pip  
 ## Requirement(Device)
 USB capture device and Raspberry Pi.  
 I use GV-USB2(IODATA) and Raspberry Pi 2B.  
