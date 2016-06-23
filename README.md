@@ -20,5 +20,7 @@ Modify SNES controller so that Raspberry Pi can operate this with GPIO access.
 
 On Raspberry Pi,  
 `$python control_bombliss.py`  
+and advance Bombliss until game start.  
 On computer of capturing SNES,  
 `$python main.py`
+then start AI.

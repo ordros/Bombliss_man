@@ -4,7 +4,7 @@ import time
 import numpy as np
 import os
 
-from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y
+from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM
 
 class CaptureBombliss:
     def __init__(self):
@@ -35,7 +35,7 @@ class CaptureBombliss:
 
     def check_next(self):
         board = self.board
-        num_stop = 3
+        num_stop = SUPPRESS_NUM
         self.cnt += 1
 
         if (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
@@ -124,4 +124,4 @@ if __name__ == '__main__':
 
     b = CaptureBombliss()
     b.parse_chips(cv2.imread("screenshot.png"))
-    b.gen_board_img()
+    #b.gen_board_img()

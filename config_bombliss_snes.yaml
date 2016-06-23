@@ -7,6 +7,8 @@ window:
 puzzle_chip:
   size: [27, 24]
 
+suppress_num: 3 # for suppress continuously fire check_next() in captute_bombliss.py
+
 directory_next_imgs: "next_imgs/"
 
 tetriminos:
