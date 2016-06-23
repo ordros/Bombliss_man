@@ -38,7 +38,7 @@ class BomblissMan:
                 soc.send(msg)
                 print "============"
                 c.current_mino = c.next_mino
-            time.sleep(0.01)
+            time.sleep(0.001)
 
 if __name__ == '__main__':
 
