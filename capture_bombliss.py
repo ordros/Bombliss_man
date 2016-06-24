@@ -46,13 +46,13 @@ class CaptureBombliss:
             self.cnt = 0
             return 2
 
-        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
-            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
-            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-            #self.current_mino = self.next_mino
-            for i in board: print i
-            self.cnt = 0
-            return 1
+        #elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
+        #    print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
+        #    print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+        #    #self.current_mino = self.next_mino
+        #    for i in board: print i
+        #    self.cnt = 0
+        #    return 1
 
         #self.current_mino = self.next_mino
         return 0
@@ -79,7 +79,7 @@ class CaptureBombliss:
         cor = []
         for i in self._imgs_next:
             cor.append(self.diff(img, i))
-        print cor
+        #print cor
         if max(cor) > 150 : # when _next_comprate=2
             self.next_mino = cor.index(max(cor))
 
