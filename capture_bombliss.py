@@ -38,12 +38,6 @@ class CaptureBombliss:
         num_stop = SUPPRESS_NUM
         self.cnt += 1
 
-        if (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
-            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
-            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-            self.current_mino = self.next_mino
-            self.cnt = 0
-            return 1
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
@@ -51,7 +45,16 @@ class CaptureBombliss:
             self.current_mino = self.next_mino
             self.cnt = 0
             return 2
-        self.current_mino = self.next_mino
+
+        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
+            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
+            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+            #self.current_mino = self.next_mino
+            for i in board: print i
+            self.cnt = 0
+            return 1
+
+        #self.current_mino = self.next_mino
         return 0
 
     def parse_chips(self, clp = None):
@@ -69,15 +72,15 @@ class CaptureBombliss:
 
     def parse_next(self, clp = None):
         rate_comp = self._next_comprate
-        if clp == None : img = self.capture_window(NEXT_POS)
-        img = cv2.GaussianBlur(img, (11,11), 0)
+        if clp == None : clp = self.capture_window(NEXT_POS)
+        img = cv2.GaussianBlur(clp, (11,11), 0)
         img = cv2.resize(img, (len(img[0])/rate_comp, len(img)/rate_comp))
         img = self.binarize(img)
         cor = []
         for i in self._imgs_next:
             cor.append(self.diff(img, i))
-
-        if max(cor) > 700 : # when _next_comprate=2
+        print cor
+        if max(cor) > 150 : # when _next_comprate=2
             self.next_mino = cor.index(max(cor))
 
     def decide_chip(self, chip):
@@ -123,5 +126,8 @@ class CaptureBombliss:
 if __name__ == '__main__':
 
     b = CaptureBombliss()
-    b.parse_chips(cv2.imread("screenshot.png"))
+    while 1:
+        b.parse_next()
+        print NEXT_MINOS[b.next_mino]
+        time.sleep(0.1)
     #b.gen_board_img()

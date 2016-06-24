@@ -66,22 +66,22 @@ class ThinkBombliss:
                     if above * under * left * right :
                         cnt += 1
                         #board_w[y][x] = 2
-                    elif above * under * left :
+                    if above * under * left :
                         cnt += 1
                         #board_w[y][x] = 2
-                    elif above * under * right :
+                    if above * under * right :
                         cnt += 1
                         #board_w[y][x] = 2
-                    elif above * right * left :
+                    if above * right * left :
                         cnt += 1
                         #board_w[y][x] = 2
-                    elif right * under * left :
+                    if right * under * left :
                         cnt += 1
                         #board_w[y][x] = 2
-                    elif under * above :
+                    if under * above :
                         cnt += 1
-                    elif left * right :
-                        cnt += 1
+                    #elif left * right :
+                    #    cnt += 1
 
         return ((len(board)+1) * (len(board[0])+1)) - cnt
 
@@ -139,7 +139,7 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0, len(board[0])-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0])/100 + float(ev_val[1])/1000 + float(ev_val[2])/10000
+                norm_ev_val = float(ev_val[0])/10 + float(ev_val[1])/50 + float(ev_val[2])/100000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel

@@ -65,7 +65,7 @@ class generateConfig:
         return [self.data["directory_next_imgs"]+x+"_binary.png" for x in self.NEXT_MINOS]
 
 if __name__ == "__main__":
-    c = generateConfig(config_file = "config_bombliss_snes.yaml")
+    c = generateConfig(config_file = "config_bombrite.yaml")
     c.load_config()
     c.gen_configfile()
     """
