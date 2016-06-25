@@ -18,6 +18,7 @@ class generateConfig:
             tetriminos.update({d[0]:d[1]["form"]})
 
         self.SUPPRESS_NUM = data["suppress_num"]
+        self.COND_NEXTMINO = data["condition_nextmino_judge"]
         self.ALIGN = al
         self.NEXT_MINOS = next_minos
         self.chip_size = data["puzzle_chip"]["size"]
@@ -33,6 +34,7 @@ class generateConfig:
         f.writelines("CHIP_Y = "+str(self.chip_size[1])+"\n")
         f.writelines("ALIGN = "+str(self.ALIGN)+"\n")
         f.writelines("SUPPRESS_NUM = "+str(self.SUPPRESS_NUM)+"\n")
+        f.writelines("COND_NEXTMINO = "+str(self.COND_NEXTMINO)+"\n")    
         f.writelines("TETRIMINOS = "+str(self.TETRIMINOS)+"\n")
         f.close()
 

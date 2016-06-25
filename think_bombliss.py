@@ -38,10 +38,10 @@ class ThinkBombliss:
         for y in xrange(1, len(b)):
             for x in xrange(len(b[0])):
                 if b[y][x] == 0:
-                    for h in xrange(y+1, 0, -1):
-                        if b[h-1][x] == 1:
-                            cnt += 1
-                            continue
+                    if sum([b[h-1][x] for h in xrange(y+1, 0, -1)]) > 0:
+                        cnt += 1
+                        b[y][x] = 2
+
         return len(b)*len(b[0]) - cnt
 
 
@@ -153,7 +153,7 @@ class ThinkBombliss:
         for sel in range(0, len(mino)):
             for xpos in range(0, len(board[0])-len(mino[sel][0])+1):
                 ev_val = self.evaluate(board, mino[sel], xpos)
-                norm_ev_val = float(ev_val[0])/1000 + float(ev_val[1])/10# + float(ev_val[2])/100000
+                norm_ev_val = float(ev_val[0])/10 + float(ev_val[1])/10# + float(ev_val[2])/100000
                 if max_ev_val < norm_ev_val :
                     max_ev_val = norm_ev_val
                     max_sel = sel
@@ -183,17 +183,17 @@ if __name__ == '__main__':
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
          [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [0,0,0,0,0,0,0,0,0,0],
-         [1,1,1,1,1,1,1,1,1,1],
-         [0,1,1,0,0,1,1,0,1,1],
+         [1,0,0,0,0,0,0,0,0,0],
+         [1,1,0,0,0,0,0,0,0,0],
+         [1,1,0,0,0,1,1,0,0,0],
+         [1,0,0,0,0,1,1,0,0,0],
+         [1,1,0,0,0,1,1,0,0,0],
+         [1,1,0,0,0,1,1,0,0,0],
          [1,1,1,1,1,1,1,0,1,1],
-         [1,1,1,1,1,1,1,1,1,1]]
+         [1,1,1,0,0,1,1,0,1,1],
+         [1,1,1,1,1,1,1,0,1,1],
+         [1,1,0,1,1,1,1,0,0,1]]
 
     tet = [[0, 0]]
     print t.eval_space5(board, tet, 1, 2)
-    print t.think(board,"T")
+    #print t.think(board,"T")

@@ -4,7 +4,7 @@ import time
 import numpy as np
 import os
 
-from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM
+from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM, COND_NEXTMINO
 
 class CaptureBombliss:
     def __init__(self):
@@ -37,23 +37,30 @@ class CaptureBombliss:
         board = self.board
         num_stop = SUPPRESS_NUM
         self.cnt += 1
-
+        fl_ch = False
+        fl_gl = False
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
-            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+            #print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
             self.current_mino = self.next_mino
+            #self.cnt = 0
+            fl_ch = True
+            #return 2
+
+        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
+            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
+            #print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+            #self.current_mino = self.next_mino
+            #for i in board: print i
+            #self.cnt = 0
+            fl_gl = True
+            #return 1
+        if fl_ch or fl_gl:
+            print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
+            #self.current_mino = self.next_mino
             self.cnt = 0
-            return 2
-
-        #elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
-        #    print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
-        #    print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-        #    #self.current_mino = self.next_mino
-        #    for i in board: print i
-        #    self.cnt = 0
-        #    return 1
-
+            return 1
         #self.current_mino = self.next_mino
         return 0
 
@@ -71,6 +78,7 @@ class CaptureBombliss:
         self.board = board
 
     def parse_next(self, clp = None):
+        boundary_correct_mino = COND_NEXTMINO
         rate_comp = self._next_comprate
         if clp == None : clp = self.capture_window(NEXT_POS)
         img = cv2.GaussianBlur(clp, (11,11), 0)
@@ -79,8 +87,8 @@ class CaptureBombliss:
         cor = []
         for i in self._imgs_next:
             cor.append(self.diff(img, i))
-        #print cor
-        if max(cor) > 150 : # when _next_comprate=2
+        print cor
+        if max(cor) > boundary_correct_mino :
             self.next_mino = cor.index(max(cor))
 
     def decide_chip(self, chip):

@@ -20,7 +20,7 @@ class BomblissMan:
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((self.server, self.port))
-
+        cnt = 0
         while True:
             c.parse_next()
             c.parse_chips()
@@ -28,7 +28,7 @@ class BomblissMan:
             #print w + "mino"
             if c.check_next() :
                 print "============"
-                print "Next!", c.cnt
+                print "Next!"
                 choice = t.think(c.whitning_board(c.board), w)
                 al = ALIGN[w][int(choice[1])]
                 # xpos, sel, ypos, align
@@ -38,6 +38,8 @@ class BomblissMan:
                 soc.send(msg)
                 print "============"
                 c.current_mino = c.next_mino
+                cnt += 1
+                c.gen_board_img("board"+str(cnt)+".png")
             time.sleep(0.001)
 
 if __name__ == '__main__':
