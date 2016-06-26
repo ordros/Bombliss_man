@@ -1,5 +1,5 @@
 import gen_config
-g = gen_config.generateConfig(config_file="config_bombliss_snes.yaml")
+g = gen_config.generateConfig(config_file="config/config_bombliss_snes_p2.yaml")
 g.gen_configfile()
 import BomblissMan
 

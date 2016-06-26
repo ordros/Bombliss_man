@@ -19,6 +19,7 @@ class generateConfig:
 
         self.SUPPRESS_NUM = data["suppress_num"]
         self.COND_NEXTMINO = data["condition_nextmino_judge"]
+        self.NEXT_COMPRATE = data["next_img_compress_rate"]
         self.ALIGN = al
         self.NEXT_MINOS = next_minos
         self.chip_size = data["puzzle_chip"]["size"]
@@ -35,6 +36,7 @@ class generateConfig:
         f.writelines("ALIGN = "+str(self.ALIGN)+"\n")
         f.writelines("SUPPRESS_NUM = "+str(self.SUPPRESS_NUM)+"\n")
         f.writelines("COND_NEXTMINO = "+str(self.COND_NEXTMINO)+"\n")
+        f.writelines("NEXT_COMPRATE = "+str(self.NEXT_COMPRATE)+"\n")
         f.writelines("TETRIMINOS = "+str(self.TETRIMINOS)+"\n")
         f.close()
 
@@ -67,7 +69,7 @@ class generateConfig:
         return [self.data["directory_next_imgs"]+x+"_binary.png" for x in self.NEXT_MINOS]
 
 if __name__ == "__main__":
-    c = generateConfig(config_file = "config_bombrite.yaml")
+    c = generateConfig(config_file = "config/config_bombliss_snes.yaml")
     c.load_config()
     c.gen_configfile()
     """

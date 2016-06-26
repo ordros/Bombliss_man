@@ -135,8 +135,8 @@ class ThinkBombliss:
     def evaluate(self, board, mino, px):
         ev_ypos = self.fall(board, mino, px)
         ev_space = self.eval_space5(board, mino, px, ev_ypos)
-        ev_space_2 = self.eval_space4(board, mino, px, ev_ypos)
-        return (ev_ypos+len(mino)-1, ev_space, ev_space_2)
+        #ev_space_2 = self.eval_space4(board, mino, px, ev_ypos)
+        return (ev_ypos+len(mino)-1, ev_space)#, ev_space_2)
 
     # refactor
     def think(self, board, current_mino):
