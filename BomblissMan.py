@@ -14,16 +14,14 @@ class BomblissMan:
     def go(self):
         c = capture_bombliss.CaptureBombliss()
         t = think_bombliss.ThinkBombliss(boardsize=(10,22))
-        c.parse_next()
-        c.parse_chips()
+        c.parse_board()
         c.current_mino = c.next_mino
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((self.server, self.port))
-        cnt = 0
+        
         while True:
-            c.parse_next()
-            c.parse_chips()
+            c.parse_board()
             w = c.get_current_mino()
             #print w + "mino"
             if c.check_next() :

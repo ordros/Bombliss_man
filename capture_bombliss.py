@@ -11,7 +11,9 @@ class CaptureBombliss:
         self.next_mino = 0
         self.current_mino = 0
         self.cnt = 0
-
+        self.cnt_gl = 0
+        self.board_clp = 0
+        self.next_clp = 0
         self.board = [[None for c in range(WINDOW_POS[2]/CHIP_X)] for l in range(WINDOW_POS[3]/CHIP_Y)]
 
         self._imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
@@ -37,32 +39,28 @@ class CaptureBombliss:
         board = self.board
         num_stop = SUPPRESS_NUM
         self.cnt += 1
-        fl_ch = False
-        fl_gl = False
+        if (not self.current_mino == self.next_mino): print"Change!", self.cnt
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
-            #print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-            self.current_mino = self.next_mino
-            #self.cnt = 0
-            fl_ch = True
-            #return 2
-
-        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > num_stop:
-            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
-            #print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-            #self.current_mino = self.next_mino
-            #for i in board: print i
-            #self.cnt = 0
-            fl_gl = True
-            #return 1
-        if fl_ch or fl_gl:
             print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
-            #self.current_mino = self.next_mino
+            self.current_mino = self.next_mino
+            self.cnt = 0
+            return 2
+
+        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > 20:
+            print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
+            self.current_mino = self.next_mino
             self.cnt = 0
             return 1
-        #self.current_mino = self.next_mino
+        self.current_mino = self.next_mino
         return 0
+
+    def parse_board(self):
+        board_clp = self.capture_window(WINDOW_POS)
+        next_clp = self.capture_window(NEXT_POS)
+        self.parse_chips(clp = board_clp)
+        self.parse_next(clp = next_clp)
 
     def parse_chips(self, clp = None):
         board = self.board
@@ -87,7 +85,7 @@ class CaptureBombliss:
         cor = []
         for i in self._imgs_next:
             cor.append(self.diff(img, i))
-        print cor
+        #print cor
         if max(cor) > boundary_correct_mino :
             self.next_mino = cor.index(max(cor))
 

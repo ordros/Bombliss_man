@@ -9,6 +9,8 @@ puzzle_chip:
 
 suppress_num: 5 # for suppress continuously fire check_next() in captute_bombliss.py
 
+condition_nextmino_judge: 150
+
 directory_next_imgs: "next_imgs_bombrite/"
 
 tetriminos:
