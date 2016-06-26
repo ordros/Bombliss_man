@@ -3,6 +3,10 @@ import think_bombliss
 import time
 import cv2
 from config_bombliss import ALIGN
+import gen_config
+g = gen_config.generateConfig(config_file="config/config_bombrite.yaml")
+g.gen_configfile()
+
 import pyautogui as p
 from control_key import move_up, move_down, move_left, move_right, move_turn, press_start, press
 import multiprocessing
@@ -16,7 +20,7 @@ def move(xp,sel,yp,al):
         move_right(xp)
     move_down(yp/5)
 
-class BomblissMan:
+class BombriteMan:
     def __init__(self):
         pass
     def go(self):
@@ -50,5 +54,5 @@ class BomblissMan:
             time.sleep(0.001)
 
 if __name__ == '__main__':
-    b = BomblissMan()
+    b = BombriteMan()
     b.go()

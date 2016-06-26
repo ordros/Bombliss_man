@@ -4,7 +4,7 @@ import time
 import numpy as np
 import os
 
-from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM, COND_NEXTMINO
+from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM, COND_NEXTMINO, NEXT_COMPRATE
 
 class CaptureBombliss:
     def __init__(self):
@@ -17,7 +17,7 @@ class CaptureBombliss:
         self.board = [[None for c in range(WINDOW_POS[2]/CHIP_X)] for l in range(WINDOW_POS[3]/CHIP_Y)]
 
         self._imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
-        self._next_comprate = 2
+        self._next_comprate = NEXT_COMPRATE
         for i in self._imgs_next:
             self._imgs_next[self._imgs_next.index(i)] = cv2.resize(i, (len(i[0])/self._next_comprate, len(i)/self._next_comprate), interpolation=cv2.cv.CV_INTER_NN)
 
@@ -39,7 +39,7 @@ class CaptureBombliss:
         board = self.board
         num_stop = SUPPRESS_NUM
         self.cnt += 1
-        if (not self.current_mino == self.next_mino): print"Change!", self.cnt
+        #if (not self.current_mino == self.next_mino): print"Change!", self.cnt
 
         if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
             print "change.", self.cnt
@@ -132,8 +132,13 @@ class CaptureBombliss:
 if __name__ == '__main__':
 
     b = CaptureBombliss()
-    while 1:
-        b.parse_next()
-        print NEXT_MINOS[b.next_mino]
-        time.sleep(0.1)
+    img = b.capture_window([1391, 233, 100, 30])
+    img = cv2.GaussianBlur(img, (11,11), 0)
+    img = b.binarize(img)
+    cv2.imwrite("Z1_binary.png", img)
+
+    #while 1:
+    #    b.parse_next()
+    #    print NEXT_MINOS[b.next_mino]
+    #    time.sleep(0.1)
     #b.gen_board_img()
