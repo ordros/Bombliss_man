@@ -19,7 +19,7 @@ class BomblissMan:
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((self.server, self.port))
-        
+
         while True:
             c.parse_board()
             w = c.get_current_mino()
@@ -36,8 +36,6 @@ class BomblissMan:
                 soc.send(msg)
                 print "============"
                 c.current_mino = c.next_mino
-                cnt += 1
-                c.gen_board_img("board"+str(cnt)+".png")
             time.sleep(0.001)
 
 if __name__ == '__main__':
