@@ -7,11 +7,11 @@ window:
 puzzle_chip:
   size: [16, 16]
 
-suppress_num: 5 # for suppress continuously fire check_next() in captute_bombliss.py
+suppress_num: 12 # for suppress continuously fire check_next() in captute_bombliss.py
 
-condition_nextmino_judge: 150
+condition_nextmino_judge: 60
 
-next_img_compress_rate: 2
+next_img_compress_rate: 4
 
 directory_next_imgs: "next_imgs_bombrite/"
 
