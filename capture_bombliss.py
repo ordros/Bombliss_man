@@ -3,6 +3,7 @@ import cv2
 import time
 import numpy as np
 import os
+from PIL import ImageGrab
 
 from config_bombliss import NEXT_MINOS, WINDOW_POS, NEXT_POS, NEXT_IMGS, CHIP_X, CHIP_Y, SUPPRESS_NUM, COND_NEXTMINO, NEXT_COMPRATE
 
@@ -12,11 +13,9 @@ class CaptureBombliss:
         self.current_mino = 0
         self.cnt = 0
         self.cnt_gl = 0
-        self.board_clp = 0
-        self.next_clp = 0
         self.board = [[None for c in range(WINDOW_POS[2]/CHIP_X)] for l in range(WINDOW_POS[3]/CHIP_Y)]
 
-        self._imgs_next = [cv2.imread(x) for x in NEXT_IMGS]
+        self._imgs_next = [cv2.imread(x, cv2.CV_LOAD_IMAGE_GRAYSCALE) for x in NEXT_IMGS]
         self._next_comprate = NEXT_COMPRATE
         for i in self._imgs_next:
             self._imgs_next[self._imgs_next.index(i)] = cv2.resize(i, (len(i[0])/self._next_comprate, len(i)/self._next_comprate), interpolation=cv2.cv.CV_INTER_NN)
@@ -37,22 +36,21 @@ class CaptureBombliss:
 
     def check_next(self):
         board = self.board
-        num_stop = SUPPRESS_NUM
         self.cnt += 1
-        #if (not self.current_mino == self.next_mino): print"Change!", self.cnt
 
-        if (not self.current_mino == self.next_mino) and self.cnt > num_stop:
+        if (not self.current_mino == self.next_mino):
             print "change.", self.cnt
             print NEXT_MINOS[self.current_mino],"->", NEXT_MINOS[self.next_mino]
             self.current_mino = self.next_mino
             self.cnt = 0
             return 2
 
-        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > 20:
+        elif (sum(board[0]) > 0  or sum(board[1]) > 0)  and self.cnt > SUPPRESS_NUM:
             print "glimpse.", self.cnt, sum(board[0]), sum(board[1])
             self.current_mino = self.next_mino
             self.cnt = 0
             return 1
+
         self.current_mino = self.next_mino
         return 0
 
@@ -108,37 +106,29 @@ class CaptureBombliss:
         img = cv2.resize(img, (posx_img*10, posy_img*10), interpolation=cv2.cv.CV_INTER_NN)
         cv2.imwrite(name, img)
 
-## replace with cv2.threshold
     def binarize(self, img):
-        out = [[0 for x in xrange(len(img[0]))] for y in xrange(len(img))]
-
-        for y in xrange(len(img)):
-            for x in xrange(len(img[0])):
-                p = img[y][x]
-                if p[0] > 100 or p[1] > 100 or p[2] > 100:
-                    out[y][x] = [0, 0, 0]
-                else :
-                    out[y][x] = [255, 255, 255]
-        return np.array(out)
+        thresh = 80
+        img_b = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, img_out =cv2.threshold(img_b, thresh, 255, cv2.THRESH_BINARY_INV)
+        return img_out
 
     def diff(self, img1, img2):
-        cnt = 0
-        for y in xrange(len(img1)):
-            for x in xrange(len(img1[0])):
-                if list(img1[y][x]) == list(img2[y][x]) :
-                    cnt += 1
-        return cnt
+        return sum([img1[y][x] == img2[y][x] for y in xrange(len(img1)) for x in xrange(len(img1[0]))])
 
 if __name__ == '__main__':
 
     b = CaptureBombliss()
-    img = b.capture_window([1391, 233, 100, 30])
-    img = cv2.GaussianBlur(img, (11,11), 0)
-    img = b.binarize(img)
-    cv2.imwrite("Z1_binary.png", img)
+    #b.capture_window(NEXT_POS)
+    #b.capture_window2(NEXT_POS)
+    #img = b.capture_window([1391, 233, 100, 30])
+    #img = cv2.GaussianBlur(img, (11,11), 0)
+    #img = b.binarize(img)
+    #cv2.imwrite("Z1_binary.png", img)
 
-    #while 1:
-    #    b.parse_next()
-    #    print NEXT_MINOS[b.next_mino]
-    #    time.sleep(0.1)
+    while 1:
+        st = time.time()
+        b.parse_board()
+        print time.time() -st
+        print NEXT_MINOS[b.next_mino]
+        time.sleep(0.1)
     #b.gen_board_img()
